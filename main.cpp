@@ -7,7 +7,7 @@ int main(int argc, char **argv) {
 		std::cerr << "Error! No file specified." << std::endl;
 		std::exit(1);
 	}
-	disassembler d(argv[2]);
+	disassembler d(argv[1]);
 	std::string asm_code = d.disassemble();
 	
 	return 0;
