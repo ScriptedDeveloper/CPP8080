@@ -1,4 +1,7 @@
 #include "disassemble.hpp"
+#include "error.hpp"
+
+std::array<disassembler_globals::AnyTuple, 2> disassembler::opmap;
 
 /*
 std::string disassembler::get_file_contents() {
@@ -10,9 +13,8 @@ std::string disassembler::get_file_contents() {
 
 void disassembler::init_array() {
 	opmap = {{{0x00, "NOP", []() {
-		cpu c;
-		c.nop();
-
+		cpu_instructions::nop();
+		return true;
 	}}}};
 		/*
 		 * All MOV instructions
@@ -134,33 +136,31 @@ void disassembler::init_array() {
 		{0x74, "MOV M, H"}};
 	*/
 }
-disassembler::AnyTuple disassembler::find_opcode(const uint8_t &opcode) {
+disassembler_globals::AnyTuple disassembler::find_opcode(const uint8_t &opcode) {
 	auto val = std::find_if(opmap.begin(), opmap.end(), [&](auto &pair) {
-		return pair.first == opcode;
+		return std::get<0>(pair) == opcode;
 			});
 	if(val == opmap.end())
 		return {};
 	return *val;
 }
 
-int get_digits(std::string &opcode) {
-	return std::stoi(opcode);
-		
+int get_digits(std::string &opcode) { 
+	try {
+		return std::stoi(opcode);
+	} catch(std::invalid_argument&) {
+		exception::invalid_asm();
+	}
+	return -1; // making the compiler stop whining
 }
 
-bool handle_instruction() {
-	return true;
-}
-
-std::string disassembler::disassemble() {
+std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
 	std::string line;
-	int first_opcode{};
+	std::vector<disassembler_globals::AnyTuple> tuple_instructions{};
 	while(std::getline(ifsfile, line)) {
 		int opcode = get_digits(line);
-		//std::string instruction = find_opcode(opcode);
-		
-		
-
+		auto tuple_inst = find_opcode(opcode);
+		tuple_instructions.push_back(tuple_inst);
 	}
-	return "";
+	return tuple_instructions;
 }

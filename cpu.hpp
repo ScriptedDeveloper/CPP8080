@@ -1,20 +1,28 @@
 #pragma once
 #include <iostream>
+#include "disassemble.hpp"
 
-class cpu {
+namespace cpu_instructions {
+	/*
+	 * Instruction handlers
+	 */
+	bool nop();
+
+	template<typename T, typename T2>
+	void mov(T &register_one, T2 &register_two) {
+		if(std::is_same<T, uint8_t>() && std::is_same<T2, uint16_t>())
+			return; // throwing invalid assembly instruction l8ter
+		register_one = register_two;
+	}
+
+};
+
+class cpu_handler {
 	public:
-		cpu() {
-			A = 0;
-			B = 0;
-			C = 0;
-			E = 0;
-			H = 0;
-			L = 0;
-			PC = 0;
-			SP = 0;
+		cpu_handler(std::vector<disassembler_globals::AnyTuple> &tuple) : tuple_instructions(tuple) {
 			
 		};
-		virtual ~cpu() {
+		virtual ~cpu_handler() {
 
 		};
 		/*
@@ -29,18 +37,8 @@ class cpu {
 		static uint8_t L;
 		static uint16_t PC; // Program counter
 		static uint16_t SP; // Stack Pointer
-
-		/*
-		 * Instruction handlers
-		 */
-		static void nop() {
-			return;
-		}
-		template<typename T, typename T2>
-		static void mov(T &register_one, T2 &register_two) {
-			if(std::is_same<T, uint8_t>() && std::is_same<T2, uint16_t>())
-				return; // throwing invalid assembly instruction l8ter
-			register_one = register_two;
-		}
+		bool handle_instructions();
+	private:
+		std::vector<disassembler_globals::AnyTuple> tuple_instructions{};
 
 };

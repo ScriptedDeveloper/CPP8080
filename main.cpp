@@ -1,5 +1,7 @@
 #include "disassemble.hpp"
-#include <cstdlib>
+#include "error.h"
+#include "cpu.hpp"
+#include "error.hpp"
 #include <iostream>
 
 int main(int argc, char **argv) {
@@ -8,7 +10,9 @@ int main(int argc, char **argv) {
 		std::exit(1);
 	}
 	disassembler d(argv[1]);
-	std::string asm_code = d.disassemble();
-	
+	auto disassembled_vec = d.disassemble();
+	cpu_handler c(disassembled_vec);
+	if(!c.handle_instructions())
+		exception::invalid_asm();;
 	return 0;
 }

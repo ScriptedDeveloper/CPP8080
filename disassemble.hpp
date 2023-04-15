@@ -9,8 +9,15 @@
 #include <sstream>
 #include <variant>
 #include <tuple>
+#include <vector>
 #include <optional>
 #include <functional>
+
+namespace disassembler_globals {
+	using AnyTuple = std::tuple<uint8_t, std::string_view, std::function<bool()>>;
+
+};
+
 #include "cpu.hpp"
 
 class disassembler {
@@ -20,22 +27,22 @@ class disassembler {
 				throw std::invalid_argument("No file named : " + filename);
 			}
 			ifsfile = std::ifstream(filename);
+			init_array();
 		};
 		virtual ~disassembler() {
 
 		};
-		std::string disassemble();
+		std::vector<disassembler_globals::AnyTuple> disassemble();
 		
 	private:
 		using AnyVar = std::variant<int, bool, char, uint8_t, void>;
-		using AnyTuple = std::tuple<uint8_t, std::string_view, std::function<void()>>;
 		std::ifstream ifsfile;
-		AnyTuple find_opcode(const uint8_t &opcode);
+		disassembler_globals::AnyTuple find_opcode(const uint8_t &opcode);
 		void init_array();
 		template <typename ... T>
 		static int add_digits(T ... digits);
 	//	std::string get_file_contents();
-		static std::array<AnyTuple, 1> opmap; // 117
+		static std::array<disassembler_globals::AnyTuple, 2> opmap; // 117
 
 
 };
