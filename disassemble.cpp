@@ -177,8 +177,8 @@ bool disassembler::correct_opcode(std::vector<disassembler_globals::AnyTuple> &t
 }
 
 std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() { 
-	int address = 0x00; // making sure compiler knows this is hex
-	int current_opcode = 0x00; // using uint8_t is giving me a real headache 
+	int address{};
+	int current_opcode{}; // using uint8_t is gave me a real headache 
 	short addr_count{};
 	std::stringstream ss; // for hex
 	std::vector<disassembler_globals::AnyTuple> tuple_instructions{};
@@ -195,17 +195,14 @@ std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
 			addr_count++;
 			continue;
 		}
-		if(current_opcode == 0) {
-			current_opcode = digit;
-			address++;
-		}
-		else if(current_opcode != 0)
-			current_opcode = add_digits(current_opcode, digit);
-
-		if(current_opcode > 0xA && current_opcode <= 0xAF) { // first looking for a 1 byte instruction
+		bool is_nop = current_opcode == 0 && digit == 0; // nop is very special since it has two zeros, so this is how I represent it
+		current_opcode = add_digits(current_opcode, digit);
+		if((current_opcode > 0xA && current_opcode <= 0xAF) || is_nop) { // first looking for a 1 byte instruction
 			auto temp_int = static_cast<uint8_t>(current_opcode);
 			failed = !correct_opcode(tuple_instructions, temp_int);
 			addr_count = (failed) ? addr_count : 0;
+			current_opcode = 0;
+			address++;
 		}
 		failed = false;
 	}
