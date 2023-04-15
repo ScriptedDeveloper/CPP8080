@@ -15,8 +15,11 @@ uint16_t cpu_handler::SP = 0;
 
 bool cpu_handler::handle_instructions() {
 	for(auto instruction : tuple_instructions) {
-		if(!std::invoke(std::get<2>(instruction)))
-			return false;
+		try {
+			std::invoke(std::get<2>(instruction));
+		} catch(...) {
+			exception::invalid_asm();
+		}
 	}
 	return true;
 }

@@ -1,7 +1,6 @@
 #include "disassemble.hpp"
-#include "error.hpp"
 
-std::array<disassembler_globals::AnyTuple, 2> disassembler::opmap;
+std::array<disassembler_globals::AnyTuple, 3> disassembler::opmap;
 
 /*
 std::string disassembler::get_file_contents() {
@@ -12,14 +11,23 @@ std::string disassembler::get_file_contents() {
 */
 
 void disassembler::init_array() {
-	opmap = {{{0x00, "NOP", []() {
-		cpu_instructions::nop();
-		return true;
-	}}}};
+	using namespace cpu_instructions;
+	opmap = {
+		{
+			{ 0x00, "nop", [](){ nop(); } },
+			{ 0x78, "MOV, A, B", [](){ mov(cpu_handler::A, cpu_handler::B); } },
+		}
+	};
+	      /*
+	      {0x78, "MOV A, B", []() {
+					      cpu_instructions::mov(cpu_handler::A, cpu_handler::B);
+		}}, 
+*/
 		/*
 		 * All MOV instructions
 		 */
-	      /*		{0x78, "MOV A, B"}, {0x79, "MOV A, C"},
+		      /*
+	       {0x79, "MOV A, C"},
 		{0x7A, "MOV A, D"},
 		{0x7B, "MOV A, E"},
 		{0x7C, "MOV A, H"},
@@ -136,7 +144,7 @@ void disassembler::init_array() {
 		{0x74, "MOV M, H"}};
 	*/
 }
-disassembler_globals::AnyTuple disassembler::find_opcode(const uint8_t &opcode) {
+disassembler_globals::AnyTuple disassembler::find_instruction(const uint8_t &opcode) {
 	auto val = std::find_if(opmap.begin(), opmap.end(), [&](auto &pair) {
 		return std::get<0>(pair) == opcode;
 			});
@@ -154,13 +162,52 @@ int get_digits(std::string &opcode) {
 	return -1; // making the compiler stop whining
 }
 
-std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
-	std::string line;
-	std::vector<disassembler_globals::AnyTuple> tuple_instructions{};
-	while(std::getline(ifsfile, line)) {
-		int opcode = get_digits(line);
-		auto tuple_inst = find_opcode(opcode);
+bool disassembler::correct_opcode(std::vector<disassembler_globals::AnyTuple> &tuple_instructions, uint8_t &current_opcode) {
+	auto tuple_inst = find_instruction(current_opcode);
+	if(std::tuple_size<decltype(tuple_inst)>::value == 0)
+		return false;
+	else {
+		/*
+		 * It worked so lets push the tuple onto the vector
+		 */
 		tuple_instructions.push_back(tuple_inst);
+		current_opcode = 0;
+	}
+	return true;
+}
+
+std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() { 
+	int address = 0x00; // making sure compiler knows this is hex
+	int current_opcode = 0x00; // using uint8_t is giving me a real headache 
+	short addr_count{};
+	std::stringstream ss; // for hex
+	std::vector<disassembler_globals::AnyTuple> tuple_instructions{};
+	bool failed = false; // for checking if instruction 1 byte find operation failed
+	for(char ch_int : machine_code) {
+		if(ch_int == '\n' || ch_int == '\0')
+			continue; // skipping
+		if(std::isalpha(ch_int))
+			exception::invalid_asm(); // aint no letters in machine code
+		ss << std::hex << ch_int;
+		int digit = char_to_hex(ch_int);
+		std::cout << digit << std::endl;
+		if(addr_count < 4) {
+			addr_count++;
+			continue;
+		}
+		if(current_opcode == 0) {
+			current_opcode = digit;
+			address++;
+		}
+		else if(current_opcode != 0)
+			current_opcode = add_digits(current_opcode, digit);
+
+		if(current_opcode > 0xA && current_opcode <= 0xAF) { // first looking for a 1 byte instruction
+			auto temp_int = static_cast<uint8_t>(current_opcode);
+			failed = !correct_opcode(tuple_instructions, temp_int);
+			addr_count = (failed) ? addr_count : 0;
+		}
+		failed = false;
 	}
 	return tuple_instructions;
 }

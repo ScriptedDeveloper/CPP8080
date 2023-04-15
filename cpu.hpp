@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "disassemble.hpp"
+#include "error.hpp"
 
 namespace cpu_instructions {
 	/*
