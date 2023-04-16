@@ -1,6 +1,7 @@
 #pragma once
 #include "disassemble.hpp"
 #include "error.hpp"
+#include <stack>
 #include <iostream>
 
 namespace cpu_instructions {
@@ -12,10 +13,28 @@ bool nop();
 template <typename T, typename T2> void mov(T &register_one, T2 &register_two) {
 	if (std::is_same<T, uint8_t>() && std::is_same<T2, uint16_t>())
 		return; // throwing invalid assembly instruction l8ter
-	register_one = register_two;
+	//register_one = register_two;
+	register_one = 2;
 }
 
 }; // namespace cpu_instructions
+
+namespace memory {
+	/*
+	 * Registers
+	 */
+	extern uint8_t A;
+	extern uint8_t B;
+	extern uint8_t C;
+	extern uint8_t D;
+	extern uint8_t E;
+	extern uint8_t H;
+	extern uint8_t L;
+	extern uint16_t PC; // Program counter
+	extern uint16_t SP; // Stack Pointer
+	
+	extern std::stack<uint8_t> stack; // Stack of CPU
+};
 
 class cpu_handler {
   public:
@@ -26,18 +45,6 @@ class cpu_handler {
 	virtual ~cpu_handler(){
 
 	};
-	/*
-	 * Registers
-	 */
-	static uint8_t A;
-	static uint8_t B;
-	static uint8_t C;
-	static uint8_t D;
-	static uint8_t E;
-	static uint8_t H;
-	static uint8_t L;
-	static uint16_t PC; // Program counter
-	static uint16_t SP; // Stack Pointer
 	bool handle_instructions();
 
   private:

@@ -1,18 +1,17 @@
 #include "cpu.hpp"
+	
 
-/*
- * static variable declaration
- */
-uint8_t cpu_handler::A = 0;
-uint8_t cpu_handler::B = 0;
-uint8_t cpu_handler::C = 0;
-uint8_t cpu_handler::D = 0;
-uint8_t cpu_handler::E = 0;
-uint8_t cpu_handler::H = 0;
-uint8_t cpu_handler::L = 0;
-uint16_t cpu_handler::PC = 0;
-uint16_t cpu_handler::SP = 0;
+uint8_t memory::A{};
+uint8_t memory::B{};
+uint8_t memory::C{};
+uint8_t memory::D{};
+uint8_t memory::E{};
+uint8_t memory::H{};
+uint8_t memory::L{};
+uint16_t memory::PC{};
+uint16_t memory::SP{}; 
 
+std::stack<uint8_t> stack; // Stack of CPU
 bool cpu_handler::handle_instructions() {
 	for (auto instruction : tuple_instructions) {
 		try {
