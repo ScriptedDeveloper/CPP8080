@@ -2,5 +2,5 @@
 #include <iostream>
 
 namespace exception {
-	void invalid_asm();
+void invalid_asm();
 };
