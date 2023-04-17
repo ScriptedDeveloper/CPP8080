@@ -145,7 +145,7 @@ bool disassembler::correct_opcode(std::vector<disassembler_globals::AnyTuple> &t
 			tuple_instructions.push_back(tuple_inst);
 			current_opcode = 0;
 		}
-		return true;
+		return true; // also can indicate by return val if it has more than 1 byte instruction and pass the value like that inside a tuple
 }
 
 std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
