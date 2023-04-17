@@ -11,7 +11,10 @@ uint8_t memory::L{};
 uint16_t memory::PC{};
 uint16_t memory::SP{}; 
 
-std::stack<uint8_t> stack; // Stack of CPU
+std::stack<uint8_t> memory::stack{}; // Stack of CPU
+
+std::unordered_map<uint8_t, uint8_t> register_params{};
+
 bool cpu_handler::handle_instructions() {
 	for (auto instruction : tuple_instructions) {
 		try {

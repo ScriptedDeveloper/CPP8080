@@ -34,6 +34,7 @@ namespace memory {
 	extern uint16_t SP; // Stack Pointer
 	
 	extern std::stack<uint8_t> stack; // Stack of CPU
+	extern std::unordered_map<uint8_t, uint8_t> register_params; // extra params for the registers, could also use the tuple for this
 };
 
 class cpu_handler {
