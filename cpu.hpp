@@ -8,13 +8,13 @@ namespace cpu_instructions {
 /*
  * Instruction handlers
  */
-bool nop();
+extern bool nop();
 
 template <typename T, typename T2> void mov(T &register_one, T2 &register_two) {
 	if (std::is_same<T, uint8_t>() && std::is_same<T2, uint16_t>())
 		return; // throwing invalid assembly instruction l8ter
 	//register_one = register_two;
-	register_one = 2;
+	register_one = register_two;
 }
 
 }; // namespace cpu_instructions
@@ -46,6 +46,8 @@ class cpu_handler {
 
 	};
 	bool handle_instructions();
+	bool push(); // self explanatory
+	bool pop();
 
   private:
 	std::vector<disassembler_globals::AnyTuple> tuple_instructions{};
