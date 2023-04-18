@@ -14,7 +14,7 @@
 #include <vector>
 
 namespace disassembler_globals {
-using AnyTuple = std::tuple<std::string_view, std::function<void()>>;
+using AnyTuple = std::tuple<std::string_view, const std::function<void(uint8_t val)>, const uint8_t>; // last param is for bytes
 
 };
 

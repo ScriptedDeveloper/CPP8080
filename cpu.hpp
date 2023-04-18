@@ -9,6 +9,7 @@ namespace cpu_instructions {
  * Instruction handlers
  */
 extern bool nop();
+extern void mvi(uint8_t val, uint8_t &reg);
 
 template <typename T, typename T2> void mov(T &register_one, T2 &register_two) {
 	if (std::is_same<T, uint8_t>() && std::is_same<T2, uint16_t>())
@@ -18,6 +19,7 @@ template <typename T, typename T2> void mov(T &register_one, T2 &register_two) {
 }
 
 }; // namespace cpu_instructions
+
 
 namespace memory {
 	/*
@@ -34,7 +36,8 @@ namespace memory {
 	extern uint16_t SP; // Stack Pointer
 	
 	extern std::stack<uint8_t> stack; // Stack of CPU
-	extern std::unordered_map<uint8_t, uint8_t> register_params; // extra params for the registers, could also use the tuple for this
+	extern std::unordered_map<std::string_view, uint8_t> register_params; // extra params for the registers, could also use the tuple for this
+									 // Will change this from string to char later!
 };
 
 class cpu_handler {

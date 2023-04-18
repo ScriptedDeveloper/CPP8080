@@ -15,106 +15,111 @@ void disassembler::init_array() {
 	using namespace cpu_instructions;
 	opmap = std::make_unique<std::unordered_map<uint8_t, disassembler_globals::AnyTuple>>(
 		std::unordered_map<uint8_t, disassembler_globals::AnyTuple>{
+		/*
 			{0x00, {"NOP", [](){
-			nop();}}},
+			nop();}, 1}},
 			{0x40, {"MOV B,B", []() {
-			mov(memory::B, memory::B); }}},
+			mov(memory::B, memory::B); }, 1}},
 			{0x41, {"MOV B,C", []() {
-			mov(memory::B, memory::C); }}},
+			mov(memory::B, memory::C); }, 1}},
 			{0x42, {"MOV B,D", []() {
-			mov(memory::B, memory::D); }}},
+			mov(memory::B, memory::D); }, 1}},
 			{0x43, {"MOV B,E", []() {
-			mov(memory::B, memory::E); }}},
+			mov(memory::B, memory::E); }, 1}},
 			{0x44, {"MOV B,H", []() {
-			mov(memory::B, memory::H); }}},
+			mov(memory::B, memory::H); }, 1}},
 			{0x45, {"MOV B,L", []() {
-			mov(memory::B, memory::L); }}},
+			mov(memory::B, memory::L); }, 1}},
 			{0x47, {"MOV B,A", []() {
-			mov(memory::B, memory::A); }}},
+			mov(memory::B, memory::A); }, 1}},
 			{0x48, {"MOV C,B", []() {
-			mov(memory::C, memory::B); }}},
+			mov(memory::C, memory::B); }, 1}},
 			{0x49, {"MOV C,C", []() {
-			mov(memory::C, memory::C); }}},
+			mov(memory::C, memory::C); }, 1}},
 			{0x4A, {"MOV C,D", []() {
-			mov(memory::C, memory::D); }}},
+			mov(memory::C, memory::D); }, 1}},
 			{0x4B, {"MOV C,E", []() {
-			mov(memory::C, memory::E); }}},
+			mov(memory::C, memory::E); }, 1}},
 			{0x4C, {"MOV C,H", []() {
-			mov(memory::C, memory::H); }}},
+			mov(memory::C, memory::H); }, 1}},
 			{0x4D, {"MOV C,L", []() {
-			mov(memory::C, memory::L); }}},
+			mov(memory::C, memory::L); }, 1}},
 			{0x4F, {"MOV C,A", []() {
-			mov(memory::C, memory::A); }}},
+			mov(memory::C, memory::A); }, 1}},
 			{0x50, {"MOV D,B", []() {
-			mov(memory::D, memory::B); }}},
+			mov(memory::D, memory::B); }, 1}},
 			{0x51, {"MOV D,C", []() {
-			mov(memory::D, memory::C); }}},
+			mov(memory::D, memory::C); }, 1}},
 			{0x52, {"MOV D,D", []() {
-			mov(memory::D, memory::D); }}},
+			mov(memory::D, memory::D); }, 1}},
 			{0x53, {"MOV D,E", []() {
-			mov(memory::D, memory::E); }}},
+			mov(memory::D, memory::E); }, 1}},
 			{0x54, {"MOV D,H", []() {
-			mov(memory::D, memory::H); }}},
+			mov(memory::D, memory::H); }, 1}},
 			{0x55, {"MOV D,L", []() {
-			mov(memory::D, memory::L); }}},
+			mov(memory::D, memory::L); }, 1}},
 			{0x57, {"MOV D,A", []() {
-			mov(memory::D, memory::A); }}},
+			mov(memory::D, memory::A); }, 1}},
 			{0x58, {"MOV E,B", []() {
-			mov(memory::E, memory::B); }}},
+			mov(memory::E, memory::B); }, 1}},
 			{0x59, {"MOV E,C", []() {
-			mov(memory::E, memory::C); }}},
+			mov(memory::E, memory::C); }, 1}},
 			{0x5A, {"MOV E,D", []() {
-			mov(memory::E, memory::D); }}},
+			mov(memory::E, memory::D); }, 1}},
 			{0x5B, {"MOV E,E", []() {
-			mov(memory::E, memory::E); }}},
+			mov(memory::E, memory::E); }, 1}},
 			{0x5C, {"MOV E,H", []() {
-			mov(memory::E, memory::H); }}},
+			mov(memory::E, memory::H); }, 1}},
 			{0x5D, {"MOV E,L", []() {
-			mov(memory::E, memory::L); }}},
+			mov(memory::E, memory::L); }, 1}},
 			{0x5F, {"MOV E,A", []() {
-			mov(memory::E, memory::A); }}},
+			mov(memory::E, memory::A); }, 1}},
 			{0x60, {"MOV H,B", []() {
-			mov(memory::H, memory::B); }}},
+			mov(memory::H, memory::B); }, 1}},
 			{0x61, {"MOV H,C", []() {
-			mov(memory::H, memory::C); }}},
+			mov(memory::H, memory::C); }, 1}},
 			{0x62, {"MOV H,D", []() {
-			mov(memory::H, memory::D); }}},
+			mov(memory::H, memory::D); }, 1}},
 			{0x63, {"MOV H,E", []() {
-			mov(memory::H, memory::E); }}},
+			mov(memory::H, memory::E); }, 1}},
 			{0x64, {"MOV H,H", []() {
-			mov(memory::H, memory::H); }}},
+			mov(memory::H, memory::H); }, 1}},
 			{0x65, {"MOV H,L", []() {
-			mov(memory::H, memory::L); }}},
+			mov(memory::H, memory::L); }, 1}},
 			{0x67, {"MOV H,A", []() {
-			mov(memory::H, memory::A); }}},
+			mov(memory::H, memory::A); }, 1}},
 			{0x68, {"MOV L,B", []() {
-			mov(memory::L, memory::B); }}},
+			mov(memory::L, memory::B); }, 1}},
 			{0x69, {"MOV L,C", []() {
-			mov(memory::L, memory::C); }}},
+			mov(memory::L, memory::C); }, 1}},
 			{0x6A, {"MOV L,D", []() {
-			mov(memory::L, memory::D); }}},
+			mov(memory::L, memory::D); }, 1}},
 			{0x6B, {"MOV L,E", []() {
-			mov(memory::L, memory::E); }}},
+			mov(memory::L, memory::E); }, 1}},
 			{0x6C, {"MOV L,H", []() {
-			mov(memory::L, memory::H); }}},
+			mov(memory::L, memory::H); }, 1}},
 			{0x6D, {"MOV L,L", []() {
-			mov(memory::L, memory::L); }}},
+			mov(memory::L, memory::L); }, 1}},
 			{0x6F, {"MOV L,A", []() {
-			mov(memory::L, memory::A); }}},
+			mov(memory::L, memory::A); }, 1}},
 			{0x78, {"MOV A,B", []() {
-			mov(memory::A, memory::B); }}},
+			mov(memory::A, memory::B); }, 1}},
 			{0x79, {"MOV A,C", []() {
-			mov(memory::A, memory::C); }}},
+			mov(memory::A, memory::C); }, 1}},
 			{0x7A, {"MOV A,D", []() {
-			mov(memory::A, memory::D); }}},
+			mov(memory::A, memory::D); }, 1}},
 			{0x7B, {"MOV A,E", []() {
-			mov(memory::A, memory::E); }}},
+			mov(memory::A, memory::E); }, 1}},
 			{0x7C, {"MOV A,H", [&]() {
-			mov(memory::A, memory::H); }}},
+			mov(memory::A, memory::H); }, 1}},
 			{0x7D, {"MOV A,L", []() {
-			mov(memory::A, memory::L); }}},
+			mov(memory::A, memory::L); }, 1}},
 			{0x7F, {"MOV A,A", []() {
-			mov(memory::A, memory::A); }}},
+			mov(memory::A, memory::A); }, 1}},
+			*/
+			{0x3E, {"A", [](uint8_t val) {
+				mvi(val, memory::A);
+			}, 1}}
 		});
 }
 disassembler_globals::AnyTuple disassembler::find_instruction(const uint8_t &opcode) {
@@ -174,7 +179,8 @@ std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
 				zero_count == 2) { // first looking for a 1 byte instruction
 				auto temp_int = static_cast<uint8_t>(current_opcode);
 				bool failed = !correct_opcode(tuple_instructions,
-											  temp_int); // for checking if instruction 1 byte find operation failed
+											  temp_int); // for checking if instruction x byte find operation failed
+				// if instruction failed, we can just keep looping to find the instruction.
 				if (!failed) {
 					current_opcode = 0;
 					addr_count = 0;
