@@ -1,5 +1,6 @@
 #include "disassemble.hpp"
 #include "cpu.hpp"
+#include <cstdint>
 
 std::unique_ptr<std::unordered_map<uint8_t, disassembler_globals::AnyTuple>> disassembler::opmap;
 
@@ -119,7 +120,7 @@ void disassembler::init_array() {
 			*/
 			{0x3E, {"A", [](uint8_t val) {
 				mvi(val, memory::A);
-			}, 1}}
+			}, 0}}
 		});
 }
 disassembler_globals::AnyTuple disassembler::find_instruction(const uint8_t &opcode) {
@@ -139,18 +140,27 @@ int get_digits(std::string &opcode) {
 }
 
 bool disassembler::correct_opcode(std::vector<disassembler_globals::AnyTuple> &tuple_instructions,
-								  uint8_t &current_opcode) {
+								  uint8_t &current_opcode, int param) {
 		auto tuple_inst = find_instruction(current_opcode);
-		if (std::get<1>(tuple_inst) == nullptr)
+		if (std::get<1>(tuple_inst) == nullptr || (std::get<0>(tuple_inst).size() == 1 && param == UINT8_MAX + 1))
 			return false;
 		else {
 			/*
 			 * It worked so lets push the tuple onto the vector
 			 */
+			std::get<2>(tuple_inst) = (param == UINT8_MAX + 1) ? 0 : param;
 			tuple_instructions.push_back(tuple_inst);
 			current_opcode = 0;
 		}
 		return true; // also can indicate by return val if it has more than 1 byte instruction and pass the value like that inside a tuple
+}
+
+void finish_instruction(int &current_opcode, short &addr_count, int &address, std::vector<uint8_t> &last_param, int &param) {
+		current_opcode = 0;
+		addr_count = 0;
+		address++;
+		param = 0;
+		last_param.clear();
 }
 
 std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
@@ -159,6 +169,11 @@ std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
 		short addr_count{}, zero_count{}; // zero count for nop
 		std::stringstream ss;			  // for hex
 		std::vector<disassembler_globals::AnyTuple> tuple_instructions{};
+		std::vector<disassembler_globals::AnyTuple> tuple_instructions_temp{};
+		int param{}; // MVI, etc.
+		bool failed; // for checking if instruction x byte find operation failed
+		std::vector<uint8_t> last_param; // in case we forgot a param
+		double i_instruction_find = 0; // for finding all digits in a >=2 byte instruction
 		for (char ch_int : machine_code) {
 			if (ch_int == '\n' || ch_int == '\0')
 				continue; // skipping
@@ -166,25 +181,36 @@ std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
 				exception::invalid_asm(); // aint no letters in machine code
 			ss << std::hex << ch_int;
 			int digit = char_to_hex(ch_int);
+			if(digit == 0 && !last_param.empty()) { // instruction successfully found, no need to keep looking
+				i_instruction_find += 0.5;
+				if(i_instruction_find == 2.0) {
+					finish_instruction(current_opcode, addr_count, address, last_param, param);
+					auto last_elm = tuple_instructions_temp.end() - 1;
+					tuple_instructions.push_back(*last_elm);
+				}
+			}
 			if (addr_count < 4) {
 				addr_count++;
 				continue;
 			}
 			bool is_nop = current_opcode == 0 &&
 						  digit == 0; // nop is very special since it has two zeros, so this is how I represent it
-			current_opcode = add_digits(current_opcode, digit);
 			if (is_nop)
 				zero_count++;
+			if(failed || !last_param.empty())
+				param = add_digits(param, digit);
+			else
+				current_opcode = add_digits(current_opcode, digit);
 			if ((current_opcode > 0xA && current_opcode <= 0xAF) || (current_opcode > 0xAF) ||
 				zero_count == 2) { // first looking for a 1 byte instruction
 				auto temp_int = static_cast<uint8_t>(current_opcode);
-				bool failed = !correct_opcode(tuple_instructions,
-											  temp_int); // for checking if instruction x byte find operation failed
-				// if instruction failed, we can just keep looping to find the instruction.
+							// if instruction failed, we can just keep looping to find the instruction.
+				failed = !correct_opcode(tuple_instructions_temp, temp_int, param);
 				if (!failed) {
-					current_opcode = 0;
-					addr_count = 0;
-					address++;
+					i_instruction_find += 0.5;
+					last_param.clear();
+					last_param.push_back(current_opcode);
+					last_param.push_back(param);
 				}
 			}
 		}

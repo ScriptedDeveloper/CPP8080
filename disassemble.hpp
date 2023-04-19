@@ -14,7 +14,7 @@
 #include <vector>
 
 namespace disassembler_globals {
-using AnyTuple = std::tuple<std::string_view, const std::function<void(uint8_t val)>, const uint8_t>; // last param is for bytes
+using AnyTuple = std::tuple<std::string_view, const std::function<void(uint8_t val)>, uint8_t>; 
 
 };
 
@@ -46,7 +46,7 @@ class disassembler {
 	using AnyVar = std::variant<int, bool, char, uint8_t, void>;
 	std::ifstream ifsfile;
 	disassembler_globals::AnyTuple find_instruction(const uint8_t &opcode);
-	bool correct_opcode(std::vector<disassembler_globals::AnyTuple> &tuple_instructions, uint8_t &current_opcode);
+	bool correct_opcode(std::vector<disassembler_globals::AnyTuple> &tuple_instructions, uint8_t &current_opcode, int param = UINT8_MAX + 1);
 	void init_array();
 	template <typename... T> static auto add_digits(T... digits);
 	template <typename T> auto char_to_hex(T ch);
