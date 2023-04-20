@@ -118,7 +118,30 @@ void disassembler::init_array() {
 			mov(memory::A, memory::A); }, 1}},
 			{0x3E, {"A", [](uint8_t val) {
 				mvi(val, memory::A);
-			}, 0}}
+			}, 0}},
+			{0x06, {"B", [](uint8_t val) {
+				mvi(val, memory::B);
+			}, 0}},
+			{0x0E, {"C", [](uint8_t val) {
+				mvi(val, memory::C);
+			}, 0}},
+			{0x16, {"D", [](uint8_t val) {
+				mvi(val, memory::D);
+			}, 0}},
+			{0x1E, {"E", [](uint8_t val) {
+				mvi(val, memory::E);
+			}, 0}},
+			{0x26, {"H", [](uint8_t val) {
+				mvi(val, memory::H);
+			}, 0}},
+			{0x2E, {"L", [](uint8_t val) {
+				mvi(val, memory::L);
+			}, 0}},
+			/*
+			{0x, {"B,B", [](uint8_t val = 0) { // double B, marked as no need for params (pushed onto stack)
+				cpu_instructions::push(memory::B);
+			}, 0}},
+			*/
 		});
 }
 disassembler_globals::AnyTuple disassembler::find_instruction(const uint8_t &opcode) {
@@ -169,7 +192,7 @@ std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
 		std::vector<disassembler_globals::AnyTuple> tuple_instructions{};
 		std::vector<disassembler_globals::AnyTuple> tuple_instructions_temp{};
 		int param{}; // MVI, etc.
-		bool failed; // for checking if instruction x byte find operation failed
+		bool failed{}; // for checking if instruction x byte find operation failed
 		std::vector<uint8_t> last_param; // in case we forgot a param
 		double i_instruction_find = 0; // for finding all digits in a >=2 byte instruction
 		for (char ch_int : machine_code) {
@@ -191,16 +214,12 @@ std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
 				addr_count++;
 				continue;
 			}
-			bool is_nop = current_opcode == 0 &&
-						  digit == 0; // nop is very special since it has two zeros, so this is how I represent it
-			if (is_nop)
-				zero_count++;
 			if(failed || !last_param.empty())
 				param = add_digits(param, digit);
 			else
 				current_opcode = add_digits(current_opcode, digit);
 			if ((current_opcode > 0xA && current_opcode <= 0xAF) || (current_opcode > 0xAF) ||
-				zero_count == 2) { // first looking for a 1 byte instruction
+				zero_count >= 1) { // first looking for a 1 byte instruction
 				auto temp_int = static_cast<uint8_t>(current_opcode);
 							// if instruction failed, we can just keep looping to find the instruction.
 				tuple_instructions_temp.clear();
@@ -208,10 +227,14 @@ std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
 				if (!failed) {
 					i_instruction_find += 0.5;
 					last_param.clear();
+					zero_count = 0;
 					last_param.push_back(current_opcode);
 					last_param.push_back(param);
+					continue;
 				}
-			}
+			}	
+			if (digit == 0)
+				zero_count++;
 		}
 		if(!last_param.empty())
 			tuple_instructions.push_back(*tuple_instructions_temp.begin()++);

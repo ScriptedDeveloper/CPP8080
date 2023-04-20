@@ -9,7 +9,9 @@ namespace cpu_instructions {
  * Instruction handlers
  */
 extern bool nop();
-extern void mvi(uint8_t val, uint8_t &reg);
+extern void mvi(uint8_t val, uint8_t &reg);	
+extern void push(uint8_t &reg); // self explanatory
+extern void pop();
 
 template <typename T, typename T2> void mov(T &register_one, T2 &register_two) {
 	if (std::is_same<T, uint8_t>() && std::is_same<T2, uint16_t>())
@@ -51,8 +53,7 @@ class cpu_handler {
 
 	};
 	bool handle_instructions();
-	bool push(); // self explanatory
-	bool pop();
+
 
   private:
 	std::vector<disassembler_globals::AnyTuple> tuple_instructions{};

@@ -32,3 +32,9 @@ bool cpu_instructions::nop() { return true; }
 void cpu_instructions::mvi(uint8_t val, uint8_t &reg) {
 	reg = val;
 }
+
+
+void cpu_instructions::push(uint8_t &reg) {
+	memory::stack.push(reg);
+	reg = 0;
+}
