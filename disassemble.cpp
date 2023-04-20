@@ -16,108 +16,106 @@ void disassembler::init_array() {
 	using namespace cpu_instructions;
 	opmap = std::make_unique<std::unordered_map<uint8_t, disassembler_globals::AnyTuple>>(
 		std::unordered_map<uint8_t, disassembler_globals::AnyTuple>{
-		/*
-			{0x00, {"NOP", [](){
+			{0x00, {"NOP", [](uint8_t val = 0){
 			nop();}, 1}},
-			{0x40, {"MOV B,B", []() {
+			{0x40, {" B,B", [](uint8_t val = 0) {
 			mov(memory::B, memory::B); }, 1}},
-			{0x41, {"MOV B,C", []() {
+			{0x41, {"B,C", [](uint8_t val = 0) {
 			mov(memory::B, memory::C); }, 1}},
-			{0x42, {"MOV B,D", []() {
+			{0x42, {"B,D", [](uint8_t val = 0) {
 			mov(memory::B, memory::D); }, 1}},
-			{0x43, {"MOV B,E", []() {
+			{0x43, {"B,E", [](uint8_t val = 0) {
 			mov(memory::B, memory::E); }, 1}},
-			{0x44, {"MOV B,H", []() {
+			{0x44, {"B,H", [](uint8_t val = 0) {
 			mov(memory::B, memory::H); }, 1}},
-			{0x45, {"MOV B,L", []() {
+			{0x45, {"B,L", [](uint8_t val = 0) {
 			mov(memory::B, memory::L); }, 1}},
-			{0x47, {"MOV B,A", []() {
+			{0x47, {"B,A", [](uint8_t val = 0) {
 			mov(memory::B, memory::A); }, 1}},
-			{0x48, {"MOV C,B", []() {
+			{0x48, {"C,B", [](uint8_t val = 0) {
 			mov(memory::C, memory::B); }, 1}},
-			{0x49, {"MOV C,C", []() {
+			{0x49, {"C,C", [](uint8_t val = 0) {
 			mov(memory::C, memory::C); }, 1}},
-			{0x4A, {"MOV C,D", []() {
+			{0x4A, {"C,D", [](uint8_t val = 0) {
 			mov(memory::C, memory::D); }, 1}},
-			{0x4B, {"MOV C,E", []() {
+			{0x4B, {"C,E", [](uint8_t val = 0) {
 			mov(memory::C, memory::E); }, 1}},
-			{0x4C, {"MOV C,H", []() {
+			{0x4C, {"C,H", [](uint8_t val = 0) {
 			mov(memory::C, memory::H); }, 1}},
-			{0x4D, {"MOV C,L", []() {
+			{0x4D, {"C,L", [](uint8_t val = 0) {
 			mov(memory::C, memory::L); }, 1}},
-			{0x4F, {"MOV C,A", []() {
+			{0x4F, {"C,A", [](uint8_t val = 0) {
 			mov(memory::C, memory::A); }, 1}},
-			{0x50, {"MOV D,B", []() {
+			{0x50, {"D,B", [](uint8_t val = 0) {
 			mov(memory::D, memory::B); }, 1}},
-			{0x51, {"MOV D,C", []() {
+			{0x51, {"D,C", [](uint8_t val = 0) {
 			mov(memory::D, memory::C); }, 1}},
-			{0x52, {"MOV D,D", []() {
+			{0x52, {"D,D", [](uint8_t val = 0) {
 			mov(memory::D, memory::D); }, 1}},
-			{0x53, {"MOV D,E", []() {
+			{0x53, {"D,E", [](uint8_t val = 0) {
 			mov(memory::D, memory::E); }, 1}},
-			{0x54, {"MOV D,H", []() {
+			{0x54, {"D,H", [](uint8_t val = 0) {
 			mov(memory::D, memory::H); }, 1}},
-			{0x55, {"MOV D,L", []() {
+			{0x55, {"D,L", [](uint8_t val = 0) {
 			mov(memory::D, memory::L); }, 1}},
-			{0x57, {"MOV D,A", []() {
+			{0x57, {"D,A", [](uint8_t val = 0) {
 			mov(memory::D, memory::A); }, 1}},
-			{0x58, {"MOV E,B", []() {
+			{0x58, {"E,B", [](uint8_t val = 0) {
 			mov(memory::E, memory::B); }, 1}},
-			{0x59, {"MOV E,C", []() {
+			{0x59, {"E,C", [](uint8_t val = 0) {
 			mov(memory::E, memory::C); }, 1}},
-			{0x5A, {"MOV E,D", []() {
+			{0x5A, {"E,D", [](uint8_t val = 0) {
 			mov(memory::E, memory::D); }, 1}},
-			{0x5B, {"MOV E,E", []() {
+			{0x5B, {"E,E", [](uint8_t val = 0) {
 			mov(memory::E, memory::E); }, 1}},
-			{0x5C, {"MOV E,H", []() {
+			{0x5C, {"E,H", [](uint8_t val = 0) {
 			mov(memory::E, memory::H); }, 1}},
-			{0x5D, {"MOV E,L", []() {
+			{0x5D, {"E,L", [](uint8_t val = 0) {
 			mov(memory::E, memory::L); }, 1}},
-			{0x5F, {"MOV E,A", []() {
+			{0x5F, {"E,A", [](uint8_t val = 0) {
 			mov(memory::E, memory::A); }, 1}},
-			{0x60, {"MOV H,B", []() {
+			{0x60, {"H,B", [](uint8_t val = 0) {
 			mov(memory::H, memory::B); }, 1}},
-			{0x61, {"MOV H,C", []() {
+			{0x61, {"H,C", [](uint8_t val = 0) {
 			mov(memory::H, memory::C); }, 1}},
-			{0x62, {"MOV H,D", []() {
+			{0x62, {"H,D", [](uint8_t val = 0) {
 			mov(memory::H, memory::D); }, 1}},
-			{0x63, {"MOV H,E", []() {
+			{0x63, {"H,E", [](uint8_t val = 0) {
 			mov(memory::H, memory::E); }, 1}},
-			{0x64, {"MOV H,H", []() {
+			{0x64, {"H,H", [](uint8_t val = 0) {
 			mov(memory::H, memory::H); }, 1}},
-			{0x65, {"MOV H,L", []() {
+			{0x65, {"H,L", [](uint8_t val = 0) {
 			mov(memory::H, memory::L); }, 1}},
-			{0x67, {"MOV H,A", []() {
+			{0x67, {"H,A", [](uint8_t val = 0) {
 			mov(memory::H, memory::A); }, 1}},
-			{0x68, {"MOV L,B", []() {
+			{0x68, {"L,B", [](uint8_t val = 0) {
 			mov(memory::L, memory::B); }, 1}},
-			{0x69, {"MOV L,C", []() {
+			{0x69, {"L,C", [](uint8_t val = 0) {
 			mov(memory::L, memory::C); }, 1}},
-			{0x6A, {"MOV L,D", []() {
+			{0x6A, {"L,D", [](uint8_t val = 0) {
 			mov(memory::L, memory::D); }, 1}},
-			{0x6B, {"MOV L,E", []() {
+			{0x6B, {"L,E", [](uint8_t val = 0) {
 			mov(memory::L, memory::E); }, 1}},
-			{0x6C, {"MOV L,H", []() {
+			{0x6C, {"L,H", [](uint8_t val = 0) {
 			mov(memory::L, memory::H); }, 1}},
-			{0x6D, {"MOV L,L", []() {
+			{0x6D, {"L,L", [](uint8_t val = 0) {
 			mov(memory::L, memory::L); }, 1}},
-			{0x6F, {"MOV L,A", []() {
+			{0x6F, {"L,A", [](uint8_t val = 0) {
 			mov(memory::L, memory::A); }, 1}},
-			{0x78, {"MOV A,B", []() {
+			{0x78, {"A,B", [](uint8_t val = 0) {
 			mov(memory::A, memory::B); }, 1}},
-			{0x79, {"MOV A,C", []() {
+			{0x79, {"A,C", [](uint8_t val = 0) {
 			mov(memory::A, memory::C); }, 1}},
-			{0x7A, {"MOV A,D", []() {
+			{0x7A, {"A,D", [](uint8_t val = 0) {
 			mov(memory::A, memory::D); }, 1}},
-			{0x7B, {"MOV A,E", []() {
+			{0x7B, {"A,E", [](uint8_t val = 0) {
 			mov(memory::A, memory::E); }, 1}},
-			{0x7C, {"MOV A,H", [&]() {
+			{0x7C, {"A,H", [&](uint8_t val = 0) {
 			mov(memory::A, memory::H); }, 1}},
-			{0x7D, {"MOV A,L", []() {
+			{0x7D, {"A,L", [](uint8_t val = 0) {
 			mov(memory::A, memory::L); }, 1}},
-			{0x7F, {"MOV A,A", []() {
+			{0x7F, {"A,A", [](uint8_t val = 0) {
 			mov(memory::A, memory::A); }, 1}},
-			*/
 			{0x3E, {"A", [](uint8_t val) {
 				mvi(val, memory::A);
 			}, 0}}
@@ -205,6 +203,7 @@ std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
 				zero_count == 2) { // first looking for a 1 byte instruction
 				auto temp_int = static_cast<uint8_t>(current_opcode);
 							// if instruction failed, we can just keep looping to find the instruction.
+				tuple_instructions_temp.clear();
 				failed = !correct_opcode(tuple_instructions_temp, temp_int, param);
 				if (!failed) {
 					i_instruction_find += 0.5;
@@ -214,5 +213,7 @@ std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
 				}
 			}
 		}
+		if(!last_param.empty())
+			tuple_instructions.push_back(*tuple_instructions_temp.begin()++);
 		return tuple_instructions;
 }

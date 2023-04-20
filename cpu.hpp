@@ -16,6 +16,7 @@ template <typename T, typename T2> void mov(T &register_one, T2 &register_two) {
 		return; // throwing invalid assembly instruction l8ter
 	//register_one = register_two;
 	register_one = register_two;
+	register_two = 0; // emptying register
 }
 
 }; // namespace cpu_instructions

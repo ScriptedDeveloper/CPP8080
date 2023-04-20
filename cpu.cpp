@@ -14,6 +14,7 @@ uint16_t memory::SP{};
 std::stack<uint8_t> memory::stack{}; // Stack of CPU
 
 // TODO: Change register params once >1 byte instruction, add other opcodes than MVI
+/*
 std::unordered_map<std::string_view, uint8_t> register_params{
 	{"A", 0x00},
 	{"B", 0x00},
@@ -25,13 +26,17 @@ std::unordered_map<std::string_view, uint8_t> register_params{
 	{"PC", 0x00},
 	{"SP", 0x00}
 };
+*/
 
 bool cpu_handler::handle_instructions() {
 	for (auto instruction : tuple_instructions) {
 		try {
 			auto ptr = std::get<1>(instruction);
-			auto params = register_params.find(std::get<0>(instruction))->second;
-			ptr(params);
+			//auto params = register_params.find(std::get<0>(instruction))->second;
+			auto param = std::get<2>(instruction);
+			//ptr(params);
+			ptr(param);
+
 		} catch (...) {
 			exception::invalid_asm();
 		}
