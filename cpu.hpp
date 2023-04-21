@@ -11,7 +11,7 @@ namespace cpu_instructions {
 extern bool nop();
 extern void mvi(uint8_t val, uint8_t &reg);	
 extern void push(uint8_t &reg); // self explanatory
-extern void pop();
+extern void pop(uint8_t &reg);
 
 template <typename T, typename T2> void mov(T &register_one, T2 &register_two) {
 	if (std::is_same<T, uint8_t>() && std::is_same<T2, uint16_t>())

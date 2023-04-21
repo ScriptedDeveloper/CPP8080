@@ -34,3 +34,8 @@ void cpu_instructions::push(uint8_t &reg) {
 	memory::stack.push(reg);
 	reg = 0;
 }
+
+void cpu_instructions::pop(uint8_t &reg) {
+	reg = memory::stack.top();
+	memory::stack.pop();
+}

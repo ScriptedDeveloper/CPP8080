@@ -80,6 +80,27 @@ void disassembler::init_array() {
 			cpu_instructions::push(memory::B);
 			},
 		0}},
+		{0xD5, {"D,D", [](uint8_t val = 0) {
+			cpu_instructions::push(memory::B);
+			},
+		0}},	
+		{0xE5, {"H, H", [](uint8_t val = 0) {
+			cpu_instructions::push(memory::B);
+			},
+		0}},
+		{0xC1, {"B, B", [](uint8_t val = 0) {
+			cpu_instructions::pop(memory::B);
+			},
+		0}},	
+		{0xD1, {"D, D", [](uint8_t val = 0) {
+			cpu_instructions::pop(memory::D);
+			},
+		0}},	
+		{0xD2, {"H, H", [](uint8_t val = 0) {
+			cpu_instructions::pop(memory::H);
+			},
+		0}},
+
 	});
 	// clang-format on
 }
