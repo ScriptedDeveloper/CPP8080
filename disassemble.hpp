@@ -43,10 +43,14 @@ class disassembler {
 
   private:
 	std::string machine_code;
+	std::vector<disassembler_globals::AnyTuple> tuple_instructions{};
+	std::vector<disassembler_globals::AnyTuple> tuple_instructions_temp{};
 	using AnyVar = std::variant<int, bool, char, uint8_t, void>;
 	std::ifstream ifsfile;
 	disassembler_globals::AnyTuple find_instruction(const uint8_t &opcode);
 	bool correct_opcode(std::vector<disassembler_globals::AnyTuple> &tuple_instructions, uint8_t &current_opcode, int param = UINT8_MAX + 1);
+	void add_instruction(double &i_instruction_find, std::vector<uint8_t> &last_param, short &zero_count, int current_opcode, int param);
+	void finish_instruction(int &current_opcode, short &addr_count, int &address, std::vector<uint8_t> &last_param, int &param);
 	void init_array();
 	template <typename... T> static auto add_digits(T... digits);
 	template <typename T> auto char_to_hex(T ch);
