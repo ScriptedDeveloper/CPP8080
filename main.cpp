@@ -11,7 +11,8 @@ int main(int argc, char **argv) {
 	}
 	disassembler d(argv[1]);
 	auto disassembled_vec = d.disassemble();
-	cpu_handler c(disassembled_vec);
+	std::vector<uint8_t> opcodes{};
+	cpu_handler c(disassembled_vec, opcodes);
 	if (!c.handle_instructions())
 		exception::invalid_asm();
 	;

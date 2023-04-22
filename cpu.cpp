@@ -13,8 +13,9 @@ uint16_t memory::SP{};
 std::stack<uint8_t> memory::stack{}; // Stack of CPU
 
 bool cpu_handler::handle_instructions() {
-	for (auto instruction : tuple_instructions) {
+	for (; memory::PC <= tuple_instructions.size(); memory::PC++) {
 		try {
+			auto instruction = tuple_instructions[memory::PC];
 			auto ptr = std::get<1>(instruction);
 			auto param = std::get<2>(instruction);
 			ptr(param);
@@ -39,3 +40,5 @@ void cpu_instructions::pop(uint8_t &reg) {
 	reg = memory::stack.top();
 	memory::stack.pop();
 }
+
+void cpu_instructions::jmp(uint8_t &addr) { memory::PC = addr; }

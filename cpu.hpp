@@ -12,6 +12,7 @@ extern bool nop();
 extern void mvi(uint8_t val, uint8_t &reg);	
 extern void push(uint8_t &reg); // self explanatory
 extern void pop(uint8_t &reg);
+extern void jmp(uint8_t &addr);
 
 template <typename T, typename T2> void mov(T &register_one, T2 &register_two) {
 	if (std::is_same<T, uint8_t>() && std::is_same<T2, uint16_t>())
@@ -45,8 +46,8 @@ namespace memory {
 
 class cpu_handler {
   public:
-	cpu_handler(std::vector<disassembler_globals::AnyTuple> &tuple)
-		: tuple_instructions(tuple){
+	cpu_handler(std::vector<disassembler_globals::AnyTuple> &tuple, std::vector<uint8_t> &opcodes_param)
+		: tuple_instructions(tuple), opcodes(opcodes_param){
 
 		  };
 	virtual ~cpu_handler(){
@@ -57,4 +58,5 @@ class cpu_handler {
 
   private:
 	std::vector<disassembler_globals::AnyTuple> tuple_instructions{};
+	std::vector<uint8_t> &opcodes;
 };
