@@ -47,11 +47,13 @@ void cpu_instructions::pop(uint8_t &reg) {
 void cpu_instructions::jmp(uint8_t &addr) { memory::PC = addr; }
 
 void cpu_instructions::call(uint8_t &addr) {
-	memory::stack.push(memory::PC);
+	memory::stack.push(memory::PC + 3); // we dont wanna have a call loop
 	memory::PC = addr;
 }
 
 void cpu_instructions::ret() {
+	if (memory::stack.empty())
+		return; // Issue here : function gets invoked twice, so it will result in a segfault
 	memory::PC = memory::stack.top();
 	memory::stack.pop();
 }
