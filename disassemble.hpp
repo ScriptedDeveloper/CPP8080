@@ -16,7 +16,7 @@
 namespace disassembler_globals {
 using AnyTuple = std::tuple<std::string_view, 
       const std::function<void(uint8_t val)>, 
-      uint8_t,  // Param
+      int,  // Param
       float   // Amount of bytes to be read (1 hex digit = 0.5 bytes)
 >;};
 
@@ -50,7 +50,7 @@ class disassembler {
 	using AnyVar = std::variant<int, bool, char, uint8_t, void>;
 	std::ifstream ifsfile;
 	disassembler_globals::AnyTuple find_instruction(const uint8_t &opcode);
-	bool correct_opcode(std::vector<disassembler_globals::AnyTuple> &tuple_instructions, uint8_t &current_opcode, int param = UINT8_MAX + 1);
+	bool correct_opcode(std::vector<disassembler_globals::AnyTuple> &tuple_instructions, uint8_t &current_opcode, int param = UINT16_MAX + 1);
 	auto get_biggest_instruction(std::vector<disassembler_globals::AnyTuple> &instructions);
 	void add_instruction(double &i_instruction_find, std::vector<uint8_t> &last_param, short &zero_count, int current_opcode, int param);
 	void finish_instruction(int &current_opcode, short &addr_count, int &address, std::vector<uint8_t> &last_param, int &param);

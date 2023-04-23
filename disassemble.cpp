@@ -1,5 +1,6 @@
 #include "disassemble.hpp"
 #include "cpu.hpp"
+#include <arpa/inet.h>
 #include <bit>
 #include <codecvt>
 #include <cstdint>
@@ -129,13 +130,15 @@ int get_digits(std::string &opcode) {
 bool disassembler::correct_opcode(std::vector<disassembler_globals::AnyTuple> &tuple_instructions,
 								  uint8_t &current_opcode, int param) {
 	auto tuple_inst = find_instruction(current_opcode);
-	if (std::get<1>(tuple_inst) == nullptr || (std::get<0>(tuple_inst).size() == 1 && param == UINT8_MAX + 1))
+	if (std::get<1>(tuple_inst) == nullptr || (std::get<0>(tuple_inst).size() == 1 && param == UINT16_MAX + 1))
 		return false;
 	else {
 		/*
 		 * It worked so lets push the tuple onto the vector
 		 */
-		std::get<2>(tuple_inst) = (param == UINT8_MAX + 1) ? 0 : param;
+		std::get<2>(tuple_inst) = (param == UINT16_MAX + 1) ? 0 : param;
+		int test = std::get<2>(tuple_inst);
+		test--;
 		tuple_instructions.push_back(tuple_inst);
 		current_opcode = 0;
 	}
@@ -176,7 +179,7 @@ std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
 	double i_instruction_find;		  // for finding all digits in a >=2 byte instruction
 	double i_instruction_max{};		  // every instruction has its own max length
 	for (char ch_int : machine_code) {
-		if (ch_int == '\n' || ch_int == '\0' || ch_int == ' ')
+		if (ch_int == '\n' || ch_int == '\0' || ch_int == ' ' || ch_int == '\t')
 			continue; // skipping
 		if (std::isalpha(ch_int) && !std::isxdigit(ch_int))
 			exception::invalid_asm(); // aint no letters in machine code
@@ -187,6 +190,8 @@ std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
 			if (i_instruction_find >= i_instruction_max) {
 				finish_instruction(current_opcode, addr_count, address, last_param, param);
 				tuple_instructions.push_back(get_biggest_instruction(tuple_instructions_temp));
+				i_instruction_max = 0;
+				i_instruction_find = 0;
 			}
 		}
 		if (addr_count < 4) {
@@ -202,13 +207,10 @@ std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
 			auto temp_int = static_cast<uint8_t>(current_opcode);
 			// if instruction failed, we can just keep looping to find the instruction.
 			tuple_instructions_temp.clear();
-			/*
-			if (i_instruction_max >= 2)
-				param = __builtin_bswap32(param);
-				*/
-			if (param >= 0x100 && i_instruction_max >= 2.0)
-				param = ((param & 0xFF00) >> 8) | ((param & 0x00FF) << 8); // turning big-endian to little-endian
-																		   // Will not always work though
+			if (i_instruction_find >= 1.5 && i_instruction_max >= 2.0) {
+				param = ntohs(param); // Will not always work though
+				(i_instruction_find == 1) ? i_instruction_find += 1 : int();
+			}
 			failed = !correct_opcode(tuple_instructions_temp, temp_int, param);
 			if (failed && param != 0) {
 				current_opcode = add_digits(current_opcode, param);
