@@ -13,6 +13,8 @@ extern void mvi(uint8_t val, uint8_t &reg);
 extern void push(uint8_t &reg); // self explanatory
 extern void pop(uint8_t &reg);
 extern void jmp(uint8_t &addr);
+extern void call(uint8_t &addr);
+extern void ret();
 
 template <typename T, typename T2> void mov(T &register_one, T2 &register_two) {
 	if (std::is_same<T, uint8_t>() && std::is_same<T2, uint16_t>())
@@ -46,7 +48,7 @@ extern std::unordered_map<std::string_view, uint8_t>
 
 class cpu_handler {
   public:
-	cpu_handler(std::vector<disassembler_globals::AnyTuple> &tuple, std::vector<uint8_t> &opcodes_param)
+	cpu_handler(std::map<uint16_t, disassembler_globals::AnyTuple> &tuple, std::vector<uint8_t> &opcodes_param)
 		: tuple_instructions(tuple), opcodes(opcodes_param){
 
 									 };
@@ -56,6 +58,6 @@ class cpu_handler {
 	bool handle_instructions();
 
   private:
-	std::vector<disassembler_globals::AnyTuple> tuple_instructions{};
+	std::map<uint16_t, disassembler_globals::AnyTuple> tuple_instructions{};
 	std::vector<uint8_t> &opcodes;
 };

@@ -107,6 +107,14 @@ void disassembler::init_array() {
 			cpu_instructions::jmp(val);
 			},
 		0, 2.0}},
+		{0xCD, {"X,X", [](uint8_t val) {
+			cpu_instructions::call(val);
+			},
+		0, 2.0}},	
+		{0xC9, {"X", [](uint8_t val = 0) {
+			cpu_instructions::ret();
+			},
+		0, 0.0}},
 
 	});
 	// clang-format on
@@ -146,12 +154,14 @@ bool disassembler::correct_opcode(std::vector<disassembler_globals::AnyTuple> &t
 				 // inside a tuple
 }
 
-void disassembler::finish_instruction(int &current_opcode, short &addr_count, std::vector<uint8_t> &last_param,
-									  int &param) {
+uint8_t disassembler::finish_instruction(int &current_opcode, short &addr_count, std::vector<uint8_t> &last_param,
+										 int &param, int &address, disassembler_globals::AnyTuple &tuple) {
 	current_opcode = 0;
 	param = 0;
 	addr_count = 0;
+	address += (std::get<3>(tuple) + 1);
 	last_param.clear();
+	return address;
 }
 
 void disassembler::add_instruction(double &i_instruction_find, std::vector<uint8_t> &last_param, short &zero_count,
@@ -161,10 +171,6 @@ void disassembler::add_instruction(double &i_instruction_find, std::vector<uint8
 	zero_count = 0;
 	last_param.push_back(current_opcode);
 	last_param.push_back(param);
-}
-
-auto disassembler::get_biggest_instruction(std::vector<disassembler_globals::AnyTuple> &instructions) {
-	return instructions.back();
 }
 
 bool disassembler::validate_opcode(int &current_opcode, double &i_instruction_max, double &i_instruction_find,
@@ -188,7 +194,7 @@ bool disassembler::validate_opcode(int &current_opcode, double &i_instruction_ma
 			failed = !correct_opcode(tuple_instructions_temp, temp_int, param);
 		}
 		if (!failed) {
-			auto i = get_biggest_instruction(tuple_instructions_temp);
+			auto i = tuple_instructions_temp.back();
 			i_instruction_max = std::get<3>(i);
 			add_instruction(i_instruction_find, last_param, zero_count, current_opcode, param);
 			return true;
@@ -206,24 +212,29 @@ bool disassembler::add_digit(char ch_int, std::stringstream &ss) {
 	return true;
 }
 
-std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
+std::map<uint16_t, disassembler_globals::AnyTuple> disassembler::disassemble() {
+	int address{};
 	int current_opcode{};			  // using uint8_t gave me a real headache
 	short addr_count{}, zero_count{}; // zero count for nop
 	std::stringstream ss;			  // for hex
+	std::string digit_str;			  // in case function name, you can check for :
 	int param{};					  // MVI, etc.
 	bool failed{};					  // for checking if instruction x byte find operation failed
 	std::vector<uint8_t> last_param;  // in case we forgot a param
 	double i_instruction_find;		  // for finding all digits in a >=2 byte instruction
 	double i_instruction_max{};		  // every instruction has its own max length
+	std::map<uint16_t, disassembler_globals::AnyTuple> tuple_instructions;
 	for (char ch_int : machine_code) {
 		if (!add_digit(ch_int, ss))
 			continue;
+		digit_str += ch_int;
 		int digit = char_to_hex(ch_int);
 		if (digit == 0 && !last_param.empty()) { // instruction successfully found, no need to keep looking
 			i_instruction_find += 0.5;
 			if (i_instruction_find >= i_instruction_max) {
-				finish_instruction(current_opcode, addr_count, last_param, param);
-				tuple_instructions.push_back(get_biggest_instruction(tuple_instructions_temp));
+				auto tuple = tuple_instructions_temp.back();
+				tuple_instructions[address] = tuple;
+				finish_instruction(current_opcode, addr_count, last_param, param, address, tuple);
 				i_instruction_max = 0;
 				i_instruction_find = 0;
 			}
@@ -242,7 +253,8 @@ std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
 		if (digit == 0)
 			zero_count++;
 	}
-	if (!last_param.empty())
-		tuple_instructions.push_back(get_biggest_instruction(tuple_instructions_temp));
+	if (!last_param.empty()) {
+		tuple_instructions[address] = tuple_instructions_temp.back();
+	}
 	return tuple_instructions;
 }

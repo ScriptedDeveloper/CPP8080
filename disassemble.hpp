@@ -1,9 +1,11 @@
 #pragma once
 #include <algorithm>
 #include <array>
+#include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <functional>
+#include <map>
 #include <memory>
 #include <optional>
 #include <sstream>
@@ -14,7 +16,7 @@
 #include <vector>
 
 namespace disassembler_globals {
-using AnyTuple = std::tuple<std::string_view, const std::function<void(uint8_t val)>,
+using AnyTuple = std::tuple<std::string_view, std::function<void(uint8_t val)>,
 							int,  // Param
 							float // Amount of bytes to be read (1 hex digit = 0.5 bytes)
 							>;
@@ -41,11 +43,11 @@ class disassembler {
 
 	};
 	// this function tries to separate one opcode from another and returns the vector without the opcode
-	std::vector<disassembler_globals::AnyTuple> disassemble();
+	std::map<uint16_t, disassembler_globals::AnyTuple> disassemble();
 
   private:
 	std::string machine_code;
-	std::vector<disassembler_globals::AnyTuple> tuple_instructions{};
+	std::map<uint16_t, disassembler_globals::AnyTuple> tuple_instructions{};
 	std::vector<disassembler_globals::AnyTuple> tuple_instructions_temp{};
 	using AnyVar = std::variant<int, bool, char, uint8_t, void>;
 	std::ifstream ifsfile;
@@ -55,10 +57,10 @@ class disassembler {
 						 std::vector<uint8_t> &last_param, short &zero_count);
 	bool correct_opcode(std::vector<disassembler_globals::AnyTuple> &tuple_instructions, uint8_t &current_opcode,
 						int param = UINT16_MAX + 1);
-	auto get_biggest_instruction(std::vector<disassembler_globals::AnyTuple> &instructions);
 	void add_instruction(double &i_instruction_find, std::vector<uint8_t> &last_param, short &zero_count,
 						 int current_opcode, int param);
-	void finish_instruction(int &current_opcode, short &addr_count, std::vector<uint8_t> &last_param, int &param);
+	uint8_t finish_instruction(int &current_opcode, short &addr_count, std::vector<uint8_t> &last_param, int &param,
+							   int &address, disassembler_globals::AnyTuple &tuple);
 	void init_array();
 	bool add_digit(char ch_int, std::stringstream &ss);
 	template <typename... T> static auto add_digits(T... digits);

@@ -13,12 +13,15 @@ uint16_t memory::SP{};
 std::stack<uint8_t> memory::stack{}; // Stack of CPU
 
 bool cpu_handler::handle_instructions() {
-	for (; memory::PC < tuple_instructions.size(); memory::PC++) {
+	for (; memory::PC <= tuple_instructions.rbegin()->first;) {
 		try {
+			uint16_t previous_pc = memory::PC;
 			auto instruction = tuple_instructions[memory::PC];
 			auto ptr = std::get<1>(instruction);
 			auto param = std::get<2>(instruction);
 			ptr(param);
+			if (memory::PC == previous_pc)
+				memory::PC += (std::get<3>(instruction) + 1);
 
 		} catch (...) {
 			exception::invalid_asm();
@@ -42,3 +45,13 @@ void cpu_instructions::pop(uint8_t &reg) {
 }
 
 void cpu_instructions::jmp(uint8_t &addr) { memory::PC = addr; }
+
+void cpu_instructions::call(uint8_t &addr) {
+	memory::stack.push(memory::PC);
+	memory::PC = addr;
+}
+
+void cpu_instructions::ret() {
+	memory::PC = memory::stack.top();
+	memory::stack.pop();
+}
