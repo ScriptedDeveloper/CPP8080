@@ -4,21 +4,21 @@
 #include <filesystem>
 #include <fstream>
 #include <functional>
+#include <memory>
 #include <optional>
 #include <sstream>
 #include <string_view>
 #include <tuple>
-#include <memory>
 #include <unordered_map>
 #include <variant>
 #include <vector>
 
 namespace disassembler_globals {
-using AnyTuple = std::tuple<std::string_view, 
-      const std::function<void(uint8_t val)>, 
-      int,  // Param
-      float   // Amount of bytes to be read (1 hex digit = 0.5 bytes)
->;};
+using AnyTuple = std::tuple<std::string_view, const std::function<void(uint8_t val)>,
+							int,  // Param
+							float // Amount of bytes to be read (1 hex digit = 0.5 bytes)
+							>;
+};
 
 #include "cpu.hpp"
 
@@ -50,11 +50,17 @@ class disassembler {
 	using AnyVar = std::variant<int, bool, char, uint8_t, void>;
 	std::ifstream ifsfile;
 	disassembler_globals::AnyTuple find_instruction(const uint8_t &opcode);
-	bool correct_opcode(std::vector<disassembler_globals::AnyTuple> &tuple_instructions, uint8_t &current_opcode, int param = UINT16_MAX + 1);
+	bool validate_opcode(int &current_opcode, double &i_instruction_max, double &i_instruction_find,
+						 std::vector<disassembler_globals::AnyTuple> &tuple_instructions_temp, int param, bool &failed,
+						 std::vector<uint8_t> &last_param, short &zero_count);
+	bool correct_opcode(std::vector<disassembler_globals::AnyTuple> &tuple_instructions, uint8_t &current_opcode,
+						int param = UINT16_MAX + 1);
 	auto get_biggest_instruction(std::vector<disassembler_globals::AnyTuple> &instructions);
-	void add_instruction(double &i_instruction_find, std::vector<uint8_t> &last_param, short &zero_count, int current_opcode, int param);
-	void finish_instruction(int &current_opcode, short &addr_count, int &address, std::vector<uint8_t> &last_param, int &param);
+	void add_instruction(double &i_instruction_find, std::vector<uint8_t> &last_param, short &zero_count,
+						 int current_opcode, int param);
+	void finish_instruction(int &current_opcode, short &addr_count, std::vector<uint8_t> &last_param, int &param);
 	void init_array();
+	bool add_digit(char ch_int, std::stringstream &ss);
 	template <typename... T> static auto add_digits(T... digits);
 	template <typename T> auto char_to_hex(T ch);
 	//	std::string get_file_contents();

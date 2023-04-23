@@ -13,7 +13,7 @@ uint16_t memory::SP{};
 std::stack<uint8_t> memory::stack{}; // Stack of CPU
 
 bool cpu_handler::handle_instructions() {
-	for (; memory::PC <= tuple_instructions.size(); memory::PC++) {
+	for (; memory::PC < tuple_instructions.size(); memory::PC++) {
 		try {
 			auto instruction = tuple_instructions[memory::PC];
 			auto ptr = std::get<1>(instruction);

@@ -146,10 +146,9 @@ bool disassembler::correct_opcode(std::vector<disassembler_globals::AnyTuple> &t
 				 // inside a tuple
 }
 
-void disassembler::finish_instruction(int &current_opcode, short &addr_count, int &address,
-									  std::vector<uint8_t> &last_param, int &param) {
+void disassembler::finish_instruction(int &current_opcode, short &addr_count, std::vector<uint8_t> &last_param,
+									  int &param) {
 	current_opcode = 0;
-	address++;
 	param = 0;
 	addr_count = 0;
 	last_param.clear();
@@ -168,9 +167,47 @@ auto disassembler::get_biggest_instruction(std::vector<disassembler_globals::Any
 	return instructions.back();
 }
 
+bool disassembler::validate_opcode(int &current_opcode, double &i_instruction_max, double &i_instruction_find,
+								   std::vector<disassembler_globals::AnyTuple> &tuple_instructions_temp, int param,
+								   bool &failed, std::vector<uint8_t> &last_param, short &zero_count) {
+	if ((current_opcode > 0xA && current_opcode <= 0xAF) || (current_opcode > 0xAF) ||
+		zero_count >= 1) { // first looking for a 1 byte instruction
+		auto temp_int = static_cast<uint8_t>(current_opcode);
+		// if instruction failed, we can just keep looping to find the instruction.
+		tuple_instructions_temp.clear();
+		if (i_instruction_find >= 1.5 && i_instruction_max >= 2.0) {
+			param = ntohs(param); // Will not always work though
+			(i_instruction_find == 1) ? i_instruction_find += 1 : int();
+		}
+		failed = !correct_opcode(tuple_instructions_temp, temp_int, param);
+		if (failed && param != 0) {
+			current_opcode = add_digits(current_opcode, param);
+			i_instruction_find = 0;
+			temp_int = current_opcode;
+			param = 0;
+			failed = !correct_opcode(tuple_instructions_temp, temp_int, param);
+		}
+		if (!failed) {
+			auto i = get_biggest_instruction(tuple_instructions_temp);
+			i_instruction_max = std::get<3>(i);
+			add_instruction(i_instruction_find, last_param, zero_count, current_opcode, param);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool disassembler::add_digit(char ch_int, std::stringstream &ss) {
+	if (ch_int == '\n' || ch_int == '\0' || ch_int == ' ' || ch_int == '\t')
+		return false; // skipping
+	if (std::isalpha(ch_int) && !std::isxdigit(ch_int))
+		exception::invalid_asm(); // aint no letters in machine code
+	ss << std::hex << ch_int;
+	return true;
+}
+
 std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
-	int address{};
-	int current_opcode{};			  // using uint8_t is gave me a real headache
+	int current_opcode{};			  // using uint8_t gave me a real headache
 	short addr_count{}, zero_count{}; // zero count for nop
 	std::stringstream ss;			  // for hex
 	int param{};					  // MVI, etc.
@@ -179,16 +216,13 @@ std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
 	double i_instruction_find;		  // for finding all digits in a >=2 byte instruction
 	double i_instruction_max{};		  // every instruction has its own max length
 	for (char ch_int : machine_code) {
-		if (ch_int == '\n' || ch_int == '\0' || ch_int == ' ' || ch_int == '\t')
-			continue; // skipping
-		if (std::isalpha(ch_int) && !std::isxdigit(ch_int))
-			exception::invalid_asm(); // aint no letters in machine code
-		ss << std::hex << ch_int;
+		if (!add_digit(ch_int, ss))
+			continue;
 		int digit = char_to_hex(ch_int);
 		if (digit == 0 && !last_param.empty()) { // instruction successfully found, no need to keep looking
 			i_instruction_find += 0.5;
 			if (i_instruction_find >= i_instruction_max) {
-				finish_instruction(current_opcode, addr_count, address, last_param, param);
+				finish_instruction(current_opcode, addr_count, last_param, param);
 				tuple_instructions.push_back(get_biggest_instruction(tuple_instructions_temp));
 				i_instruction_max = 0;
 				i_instruction_find = 0;
@@ -202,30 +236,9 @@ std::vector<disassembler_globals::AnyTuple> disassembler::disassemble() {
 			param = add_digits(param, digit);
 		else
 			current_opcode = add_digits(current_opcode, digit);
-		if ((current_opcode > 0xA && current_opcode <= 0xAF) || (current_opcode > 0xAF) ||
-			zero_count >= 1) { // first looking for a 1 byte instruction
-			auto temp_int = static_cast<uint8_t>(current_opcode);
-			// if instruction failed, we can just keep looping to find the instruction.
-			tuple_instructions_temp.clear();
-			if (i_instruction_find >= 1.5 && i_instruction_max >= 2.0) {
-				param = ntohs(param); // Will not always work though
-				(i_instruction_find == 1) ? i_instruction_find += 1 : int();
-			}
-			failed = !correct_opcode(tuple_instructions_temp, temp_int, param);
-			if (failed && param != 0) {
-				current_opcode = add_digits(current_opcode, param);
-				i_instruction_find = 0;
-				temp_int = current_opcode;
-				param = 0;
-				failed = !correct_opcode(tuple_instructions_temp, temp_int, param);
-			}
-			if (!failed) {
-				auto i = get_biggest_instruction(tuple_instructions_temp);
-				i_instruction_max = std::get<3>(i);
-				add_instruction(i_instruction_find, last_param, zero_count, current_opcode, param);
-				continue;
-			}
-		}
+		if (validate_opcode(current_opcode, i_instruction_max, i_instruction_find, tuple_instructions_temp, param,
+							failed, last_param, zero_count))
+			continue;
 		if (digit == 0)
 			zero_count++;
 	}
