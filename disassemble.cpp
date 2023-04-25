@@ -164,8 +164,8 @@ uint8_t disassembler::finish_instruction(int &current_opcode, short &addr_count,
 	return address;
 }
 
-void disassembler::add_instruction(double &i_instruction_find, std::vector<uint8_t> &last_param, short &zero_count,
-								   int current_opcode, int param) {
+void disassembler::add_last_param(double &i_instruction_find, std::vector<uint8_t> &last_param, short &zero_count,
+								  int current_opcode, int param) {
 	// i_instruction_find += 0.5;
 	last_param.clear();
 	zero_count = 0;
@@ -174,7 +174,7 @@ void disassembler::add_instruction(double &i_instruction_find, std::vector<uint8
 }
 
 bool disassembler::validate_opcode(int &current_opcode, double &i_instruction_max, double &i_instruction_find,
-								   std::vector<disassembler_globals::AnyTuple> &tuple_instructions_temp, int param,
+								   std::vector<disassembler_globals::AnyTuple> &tuple_instructions_temp, int &param,
 								   bool &failed, std::vector<uint8_t> &last_param, short &zero_count) {
 	if ((current_opcode > 0xA && current_opcode <= 0xAF) || (current_opcode > 0xAF) ||
 		zero_count >= 1) { // first looking for a 1 byte instruction
@@ -196,7 +196,7 @@ bool disassembler::validate_opcode(int &current_opcode, double &i_instruction_ma
 		if (!failed) {
 			auto i = tuple_instructions_temp.back();
 			i_instruction_max = std::get<3>(i);
-			add_instruction(i_instruction_find, last_param, zero_count, current_opcode, param);
+			add_last_param(i_instruction_find, last_param, zero_count, current_opcode, param);
 			return true;
 		}
 	}
@@ -212,8 +212,35 @@ bool disassembler::add_digit(char ch_int, std::stringstream &ss) {
 	return true;
 }
 
+/*
+bool disassembler::is_empty_instruction(uint8_t current_opcode, int i_string, short zero_count) {
+	int size = machine_code.size() - 1;
+	if(zero_count < 4)
+		return false;
+	if(size == i_string)
+		return false; // at end of program, preventing segfault
+	if(machine_code[i_string + 1] == 0) // its an empty instruction
+		return true;
+	return false;
+}
+*/
+
+bool disassembler::add_instruction(int &current_opcode, short &addr_count, std::vector<uint8_t> &last_param, int &param,
+								   int &address, disassembler_globals::AnyTuple tuple) {
+	if (tuple != disassembler_globals::EMPTY_TUPLE) {
+		auto tuple = tuple_instructions_temp.back();
+		tuple_instructions[address] = tuple;
+	}
+	finish_instruction(current_opcode, addr_count, last_param, param, address, tuple);
+	i_instruction_max = 0;
+	i_instruction_find = 0;
+
+	return true;
+}
+
 std::map<uint16_t, disassembler_globals::AnyTuple> disassembler::disassemble() {
 	int address{};
+	int i_string = -1;				  // iteration for string
 	int current_opcode{};			  // using uint8_t gave me a real headache
 	short addr_count{}, zero_count{}; // zero count for nop
 	std::stringstream ss;			  // for hex
@@ -221,10 +248,8 @@ std::map<uint16_t, disassembler_globals::AnyTuple> disassembler::disassemble() {
 	int param{};					  // MVI, etc.
 	bool failed{};					  // for checking if instruction x byte find operation failed
 	std::vector<uint8_t> last_param;  // in case we forgot a param
-	double i_instruction_find;		  // for finding all digits in a >=2 byte instruction
-	double i_instruction_max{};		  // every instruction has its own max length
-	std::map<uint16_t, disassembler_globals::AnyTuple> tuple_instructions;
 	for (char ch_int : machine_code) {
+		i_string++;
 		if (!add_digit(ch_int, ss))
 			continue;
 		digit_str += ch_int;
@@ -233,10 +258,7 @@ std::map<uint16_t, disassembler_globals::AnyTuple> disassembler::disassemble() {
 			i_instruction_find += 0.5;
 			if (i_instruction_find >= i_instruction_max) {
 				auto tuple = tuple_instructions_temp.back();
-				tuple_instructions[address] = tuple;
-				finish_instruction(current_opcode, addr_count, last_param, param, address, tuple);
-				i_instruction_max = 0;
-				i_instruction_find = 0;
+				add_instruction(current_opcode, addr_count, last_param, param, address, tuple);
 			}
 		}
 		if (addr_count < 4) {

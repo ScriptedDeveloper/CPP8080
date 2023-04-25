@@ -20,7 +20,8 @@ using AnyTuple = std::tuple<std::string_view, std::function<void(uint8_t val)>,
 							int,  // Param
 							float // Amount of bytes to be read (1 hex digit = 0.5 bytes)
 							>;
-};
+constexpr auto EMPTY_TUPLE = std::make_tuple("", nullptr, UINT16_MAX + 1, 0.0);
+}; // namespace disassembler_globals
 
 #include "cpu.hpp"
 
@@ -47,20 +48,25 @@ class disassembler {
 
   private:
 	std::string machine_code;
+	double i_instruction_find;	// for finding all digits in a >=2 byte instruction
+	double i_instruction_max{}; // every instruction has its own max length
 	std::map<uint16_t, disassembler_globals::AnyTuple> tuple_instructions{};
 	std::vector<disassembler_globals::AnyTuple> tuple_instructions_temp{};
 	using AnyVar = std::variant<int, bool, char, uint8_t, void>;
 	std::ifstream ifsfile;
 	disassembler_globals::AnyTuple find_instruction(const uint8_t &opcode);
+	bool add_instruction(int &current_opcode, short &addr_count, std::vector<uint8_t> &last_param, int &param,
+						 int &address, disassembler_globals::AnyTuple tuple = disassembler_globals::EMPTY_TUPLE);
 	bool validate_opcode(int &current_opcode, double &i_instruction_max, double &i_instruction_find,
-						 std::vector<disassembler_globals::AnyTuple> &tuple_instructions_temp, int param, bool &failed,
+						 std::vector<disassembler_globals::AnyTuple> &tuple_instructions_temp, int &param, bool &failed,
 						 std::vector<uint8_t> &last_param, short &zero_count);
 	bool correct_opcode(std::vector<disassembler_globals::AnyTuple> &tuple_instructions, uint8_t &current_opcode,
 						int param = UINT16_MAX + 1);
-	void add_instruction(double &i_instruction_find, std::vector<uint8_t> &last_param, short &zero_count,
-						 int current_opcode, int param);
+	void add_last_param(double &i_instruction_find, std::vector<uint8_t> &last_param, short &zero_count,
+						int current_opcode, int param);
 	uint8_t finish_instruction(int &current_opcode, short &addr_count, std::vector<uint8_t> &last_param, int &param,
 							   int &address, disassembler_globals::AnyTuple &tuple);
+	bool is_empty_instruction(uint8_t current_opcode, int i_string, short zero_count);
 	void init_array();
 	bool add_digit(char ch_int, std::stringstream &ss);
 	template <typename... T> static auto add_digits(T... digits);
