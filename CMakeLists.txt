@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(CrazeEmulator)
+project(CPP8080)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Debug)
@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS "-g -Wall -Werror -Wuninitialized")
 
 file(GLOB SOURCES "*.cpp")
 
-add_executable(CrazeEmulator ${SOURCES})
+add_executable(CPP8080 ${SOURCES})
 
 if(UNIX)
 	file(GLOB HEADER_SOURCES "*.cpp" "*.hpp")
@@ -15,7 +15,7 @@ if(UNIX)
 	COMMAND clang-format -i ${HEADER_SOURCES}
 	COMMENT "Running clang-format"
 	)
-add_dependencies(CrazeEmulator clang-format)
+add_dependencies(CPP8080 clang-format)
 endif()
 
 
