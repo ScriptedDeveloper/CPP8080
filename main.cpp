@@ -1,7 +1,6 @@
-#include "cpu.hpp"
-#include "disassemble.hpp"
-#include "error.h"
-#include "error.hpp"
+#include "cpu/cpu.hpp"
+#include "disassemble/disassemble.hpp"
+#include "error/error.hpp"
 #include <iostream>
 
 int main(int argc, char **argv) {

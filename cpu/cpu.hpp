@@ -1,6 +1,6 @@
 #pragma once
-#include "disassemble.hpp"
-#include "error.hpp"
+#include "../disassemble/disassemble.hpp"
+#include "../error/error.hpp"
 #include <iostream>
 #include <stack>
 

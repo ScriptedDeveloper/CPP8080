@@ -23,7 +23,7 @@ using AnyTuple = std::tuple<std::string_view, std::function<void(uint8_t val)>,
 constexpr auto EMPTY_TUPLE = std::make_tuple("", nullptr, UINT16_MAX + 1, 0.0);
 }; // namespace disassembler_globals
 
-#include "cpu.hpp"
+#include "../cpu/cpu.hpp"
 
 class disassembler {
   public:

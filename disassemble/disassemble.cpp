@@ -1,5 +1,4 @@
 #include "disassemble.hpp"
-#include "cpu.hpp"
 #include <arpa/inet.h>
 #include <bit>
 #include <codecvt>
