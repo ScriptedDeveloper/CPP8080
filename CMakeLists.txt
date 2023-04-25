@@ -10,8 +10,9 @@ file(GLOB SOURCES "*.cpp")
 add_executable(CrazeEmulator ${SOURCES})
 
 if(UNIX)
+	file(GLOB HEADER_SOURCES "*.cpp" "*.hpp")
 	add_custom_target(clang-format
-	COMMAND clang-format -i ${SOURCES}
+	COMMAND clang-format -i ${HEADER_SOURCES}
 	COMMENT "Running clang-format"
 	)
 add_dependencies(CrazeEmulator clang-format)
