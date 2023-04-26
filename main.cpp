@@ -10,8 +10,7 @@ int main(int argc, char **argv) {
 	}
 	disassembler d(argv[1]);
 	auto disassembled_vec = d.disassemble();
-	std::vector<uint8_t> opcodes{};
-	cpu_handler c(disassembled_vec, opcodes);
+	cpu_handler c(disassembled_vec);
 	if (!c.handle_instructions())
 		exception::invalid_asm();
 	;

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(CPP8080)
+project(CrazeEmulate)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Debug)
@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS "-g -Wall -Werror -Wuninitialized")
 
 file(GLOB SOURCES "*.cpp" "cpu/*.cpp" "disassemble/*.cpp" "error/*.cpp")
 
-add_executable(CPP8080 ${SOURCES})
+add_executable(CrazeEmulate ${SOURCES})
 
 if(UNIX)
 	file(GLOB HEADER_SOURCES "*.cpp" "cpu/*.cpp" "disassemble/*.cpp" "error/*.cpp" "disassemble/*.hpp" "cpu/*.hpp" "error/*.hpp")
@@ -15,7 +15,7 @@ if(UNIX)
 	COMMAND clang-format -i ${HEADER_SOURCES}
 	COMMENT "Running clang-format"
 	)
-add_dependencies(CPP8080 clang-format)
+add_dependencies(CrazeEmulate clang-format)
 endif()
 
 

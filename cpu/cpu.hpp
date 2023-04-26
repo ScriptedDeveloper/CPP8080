@@ -48,10 +48,10 @@ extern std::unordered_map<std::string_view, uint8_t>
 
 class cpu_handler {
   public:
-	cpu_handler(std::map<uint16_t, disassembler_globals::AnyTuple> &tuple, std::vector<uint8_t> &opcodes_param)
-		: tuple_instructions(tuple), opcodes(opcodes_param){
+	cpu_handler(std::map<uint16_t, disassembler_globals::AnyTuple> &tuple)
+		: tuple_instructions(tuple){
 
-									 };
+		  };
 	virtual ~cpu_handler(){
 
 	};
@@ -59,5 +59,4 @@ class cpu_handler {
 
   private:
 	std::map<uint16_t, disassembler_globals::AnyTuple> tuple_instructions{};
-	std::vector<uint8_t> &opcodes;
 };
