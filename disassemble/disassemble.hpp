@@ -55,17 +55,19 @@ class disassembler {
 	using AnyVar = std::variant<int, bool, char, uint8_t, void>;
 	std::ifstream ifsfile;
 	disassembler_globals::AnyTuple find_instruction(const uint8_t &opcode);
-	bool add_instruction(int &current_opcode, short &addr_count, std::vector<uint8_t> &last_param, int &param,
-						 int &address, disassembler_globals::AnyTuple tuple = disassembler_globals::EMPTY_TUPLE);
+	// bool big_to_little_endian(int i_instruction_find, int i_instruction_max, int &param);
+	bool add_instruction(int &current_opcode, std::vector<uint8_t> &last_param, int &param, int &address,
+						 double i_instruction_find, double i_instruction_max,
+						 disassembler_globals::AnyTuple tuple = disassembler_globals::EMPTY_TUPLE);
 	bool validate_opcode(int &current_opcode, double &i_instruction_max, double &i_instruction_find,
 						 std::vector<disassembler_globals::AnyTuple> &tuple_instructions_temp, int &param, bool &failed,
-						 std::vector<uint8_t> &last_param, short &zero_count);
+						 std::vector<uint8_t> &last_param, short &zero_count, int &address);
 	bool correct_opcode(std::vector<disassembler_globals::AnyTuple> &tuple_instructions, uint8_t &current_opcode,
 						int param = UINT16_MAX + 1);
 	void add_last_param(double &i_instruction_find, std::vector<uint8_t> &last_param, short &zero_count,
 						int current_opcode, int param);
-	uint8_t finish_instruction(int &current_opcode, short &addr_count, std::vector<uint8_t> &last_param, int &param,
-							   int &address, disassembler_globals::AnyTuple &tuple);
+	uint8_t finish_instruction(int &current_opcode, std::vector<uint8_t> &last_param, int &param, int &address,
+							   disassembler_globals::AnyTuple &tuple);
 	bool is_empty_instruction(uint8_t current_opcode, int i_string, short zero_count);
 	void init_array();
 	bool add_digit(char ch_int, std::stringstream &ss);
