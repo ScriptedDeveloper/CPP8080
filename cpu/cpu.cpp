@@ -8,7 +8,7 @@ uint8_t memory::E{};
 uint8_t memory::H{};
 uint8_t memory::L{};
 uint16_t memory::PC{};
-uint16_t memory::SP{};
+uint16_t memory::SP{0xFFFF}; // stack grows from down to upper
 
 std::stack<uint8_t> memory::stack{}; // Stack of CPU
 
@@ -36,12 +36,14 @@ void cpu_instructions::mvi(uint8_t val, uint8_t &reg) { reg = val; }
 
 void cpu_instructions::push(uint8_t &reg) {
 	memory::stack.push(reg);
+	memory::SP--;
 	reg = 0;
 }
 
 void cpu_instructions::pop(uint8_t &reg) {
 	reg = memory::stack.top();
 	memory::stack.pop();
+	memory::SP++;
 }
 
 void cpu_instructions::jmp(uint8_t &addr) { memory::PC = addr; }
