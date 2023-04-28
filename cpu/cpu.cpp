@@ -13,6 +13,8 @@ uint16_t memory::SP{0xFFFF}; // stack grows from down to upper
 std::stack<uint8_t> memory::stack{}; // Stack of CPU
 
 bool cpu_handler::handle_instructions() {
+	if (tuple_instructions.empty())
+		exception::invalid_format(); // why would you run an empty executeable?
 	for (; memory::PC <= tuple_instructions.rbegin()->first;) {
 		try {
 			uint16_t previous_pc = memory::PC;

@@ -1,5 +1,4 @@
 #include "disassemble.hpp"
-#include <arpa/inet.h>
 #include <bit>
 #include <codecvt>
 #include <cstdint>
@@ -71,13 +70,13 @@ void disassembler::init_array() {
 		{0x7C, {"A,H", [&](uint8_t val = 0) { mov(memory::A, memory::H); }, 1, 0.0}},
 		{0x7D, {"A,L", [](uint8_t val = 0) { mov(memory::A, memory::L); }, 1, 0.0}},
 		{0x7F, {"A,A", [](uint8_t val = 0) { mov(memory::A, memory::A); }, 1, 0.0}},
-		{0x3E, {"A", [](uint8_t val) { mvi(val, memory::A); }, 0, 1.0}},
-		{0x06, {"B", [](uint8_t val) { mvi(val, memory::B); }, 0, 1.0}},
-		{0x0E, {"C", [](uint8_t val) { mvi(val, memory::C); }, 0, 1.0}},
-		{0x16, {"D", [](uint8_t val) { mvi(val, memory::D); }, 0, 1.0}},
-		{0x1E, {"E", [](uint8_t val) { mvi(val, memory::E); }, 0, 1.0}},
-		{0x26, {"H", [](uint8_t val) { mvi(val, memory::H); }, 0, 1.0}},
-		{0x2E, {"L", [](uint8_t val) { mvi(val, memory::L); }, 0, 1.0}},
+		{0x3E, {"A", [](uint8_t val) { mvi(val, memory::A); }, 0, 0.5}},
+		{0x06, {"B", [](uint8_t val) { mvi(val, memory::B); }, 0, 0.5}},
+		{0x0E, {"C", [](uint8_t val) { mvi(val, memory::C); }, 0, 0.5}},
+		{0x16, {"D", [](uint8_t val) { mvi(val, memory::D); }, 0, 0.5}},
+		{0x1E, {"E", [](uint8_t val) { mvi(val, memory::E); }, 0, 0.5}},
+		{0x26, {"H", [](uint8_t val) { mvi(val, memory::H); }, 0, 0.5}},
+		{0x2E, {"L", [](uint8_t val) { mvi(val, memory::L); }, 0, 0.5}},
 		{0xC5, {"B,B", [](uint8_t val = 0) { // double B, marked as no need for params (pushed onto stack)
 			cpu_instructions::push(memory::B);
 			},
@@ -105,11 +104,11 @@ void disassembler::init_array() {
 		{0xC3, {"X,X", [](uint8_t val) {
 			cpu_instructions::jmp(val);
 			},
-		0, 2.0}},
+		0, 1.0}},
 		{0xCD, {"X,X", [](uint8_t val) {
 			cpu_instructions::call(val);
 			},
-		0, 2.0}},	
+		0, 1.0}},	
 		{0xC9, {"X", [](uint8_t val = 0) {
 			cpu_instructions::ret();
 			},
@@ -153,8 +152,8 @@ bool disassembler::correct_opcode(std::vector<disassembler_globals::AnyTuple> &t
 				 // inside a tuple
 }
 
-uint8_t disassembler::finish_instruction(int &current_opcode, std::vector<uint8_t> &last_param, int &param,
-										 int &address, disassembler_globals::AnyTuple &tuple) {
+uint8_t disassembler::finish_instruction(uint8_t &current_opcode, std::vector<uint16_t> &last_param, uint16_t &param,
+										 uint16_t &address, disassembler_globals::AnyTuple &tuple) {
 	current_opcode = 0;
 	param = 0;
 	address += (std::get<3>(tuple) + 1);
@@ -162,7 +161,7 @@ uint8_t disassembler::finish_instruction(int &current_opcode, std::vector<uint8_
 	return address;
 }
 
-void disassembler::add_last_param(double &i_instruction_find, std::vector<uint8_t> &last_param, short &zero_count,
+void disassembler::add_last_param(double &i_instruction_find, std::vector<uint16_t> &last_param, short &zero_count,
 								  int current_opcode, int param) {
 	// i_instruction_find += 0.5;
 	last_param.clear();
@@ -170,43 +169,31 @@ void disassembler::add_last_param(double &i_instruction_find, std::vector<uint8_
 	last_param.push_back(current_opcode);
 	last_param.push_back(param);
 }
-/*
-bool disassembler::big_to_little_endian(int i_instruction_find, int i_instruction_max, int &param) {
-	if (i_instruction_find >= 1.5 && i_instruction_max >= 2.0) {
-		param = ntohs(param); // Will not always work though
-		(i_instruction_find == 1) ? i_instruction_find += 1 : int();
-		return true;
-	}
-	return false;
-}
-*/
 
-bool disassembler::validate_opcode(int &current_opcode, double &i_instruction_max, double &i_instruction_find,
-								   std::vector<disassembler_globals::AnyTuple> &tuple_instructions_temp, int &param,
-								   bool &failed, std::vector<uint8_t> &last_param, short &zero_count, int &address) {
-	if ((current_opcode > 0xA && current_opcode <= 0xAF) || (current_opcode > 0xAF) ||
-		zero_count >= 1) { // first looking for a 1 byte instruction
-		auto temp_int = static_cast<uint8_t>(current_opcode);
-		// if instruction failed, we can just keep looping to find the instruction.
-		tuple_instructions_temp.clear();
+bool disassembler::validate_opcode(uint8_t &current_opcode, double &i_instruction_max, double &i_instruction_find,
+								   std::vector<disassembler_globals::AnyTuple> &tuple_instructions_temp,
+								   uint16_t &param, bool &failed, std::vector<uint16_t> &last_param, short &zero_count,
+								   uint16_t &address) {
+	auto temp_int = static_cast<uint8_t>(current_opcode);
+	// if instruction failed, we can just keep looping to find the instruction.
+	tuple_instructions_temp.clear();
+	failed = !correct_opcode(tuple_instructions_temp, temp_int, param);
+	if (failed && param != 0) {
+		current_opcode = add_digits(current_opcode, param);
+		i_instruction_find = 0;
+		temp_int = current_opcode;
+		param = 0;
 		failed = !correct_opcode(tuple_instructions_temp, temp_int, param);
-		if (failed && param != 0) {
-			current_opcode = add_digits(current_opcode, param);
-			i_instruction_find = 0;
-			temp_int = current_opcode;
-			param = 0;
-			failed = !correct_opcode(tuple_instructions_temp, temp_int, param);
+	}
+	if (!failed) {
+		auto i = tuple_instructions_temp.back();
+		i_instruction_max = std::get<3>(i);
+		if (i_instruction_max == 0) {
+			add_instruction(current_opcode, last_param, param, address, i_instruction_find, i_instruction_max, i);
+		} else {
+			add_last_param(i_instruction_find, last_param, zero_count, current_opcode, param);
 		}
-		if (!failed) {
-			auto i = tuple_instructions_temp.back();
-			i_instruction_max = std::get<3>(i);
-			if (i_instruction_max == 0) {
-				add_instruction(current_opcode, last_param, param, address, i_instruction_find, i_instruction_max, i);
-			} else {
-				add_last_param(i_instruction_find, last_param, zero_count, current_opcode, param);
-			}
-			return true;
-		}
+		return true;
 	}
 	return false;
 }
@@ -233,38 +220,18 @@ bool disassembler::is_empty_instruction(uint8_t current_opcode, int i_string, sh
 }
 */
 
-bool disassembler::add_instruction(int &current_opcode, std::vector<uint8_t> &last_param, int &param, int &address,
-								   double i_instruction_find, double i_instruction_max,
-								   disassembler_globals::AnyTuple tuple) {
-	if (tuple != disassembler_globals::EMPTY_TUPLE) {
-		auto tuple = tuple_instructions_temp.back();
-		// big_to_little_endian(i_instruction_find, i_instruction_max, param);
-		std::get<2>(tuple) = param;
-		tuple_instructions[address] = tuple;
-	}
-	finish_instruction(current_opcode, last_param, param, address, tuple);
-	i_instruction_max = 0;
-	i_instruction_find = 0;
-
-	return true;
-}
-
 std::map<uint16_t, disassembler_globals::AnyTuple> disassembler::disassemble() {
-	int address{};
-	int i_string = -1;				 // iteration for string
-	int current_opcode{};			 // using uint8_t gave me a real headache
-	short zero_count{};				 // zero count for nop
-	std::stringstream ss;			 // for hex
-	std::string digit_str;			 // in case function name, you can check for :
-	int param{};					 // MVI, etc.
-	bool failed{};					 // for checking if instruction x byte find operation failed
-	std::vector<uint8_t> last_param; // in case we forgot a param
-	for (char ch_int : machine_code) {
+	uint16_t address{};
+	int i_string = -1;				  // iteration for string
+	uint8_t current_opcode{};		  // using uint8_t gave me a real headache
+	short zero_count{};				  // zero count for nop
+	std::stringstream ss;			  // for hex
+	std::string digit_str;			  // in case function name, you can check for :
+	uint16_t param{};				  // MVI, etc.
+	bool failed{};					  // for checking if instruction x byte find operation failed
+	std::vector<uint16_t> last_param; // in case we forgot a param
+	for (uint8_t digit : bytes_vec) {
 		i_string++;
-		if (!add_digit(ch_int, ss))
-			continue;
-		digit_str += ch_int;
-		int digit = char_to_hex(ch_int);
 		if (!last_param.empty())
 			param = add_digits(param, digit);
 		else
@@ -272,9 +239,14 @@ std::map<uint16_t, disassembler_globals::AnyTuple> disassembler::disassemble() {
 		if (!last_param.empty()) { // instruction successfully found, no need to keep looking
 			i_instruction_find += 0.5;
 			if (i_instruction_find >= i_instruction_max) {
+				bool skip_endian{};
 				auto tuple = tuple_instructions_temp.back();
+				if (i_instruction_max == 1 && digit == 0) {
+					param = param / 10; // useless extra 0
+					skip_endian = true;
+				}
 				add_instruction(current_opcode, last_param, param, address, i_instruction_find, i_instruction_max,
-								tuple);
+								tuple, skip_endian);
 				continue;
 			}
 		}
