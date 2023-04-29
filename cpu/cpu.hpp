@@ -56,6 +56,13 @@ class cpu_handler {
 
 	};
 	bool handle_instructions();
+	bool CF{}; // Carry Flag
+	bool ZF{}; // Zero Flag
+	bool S{}; // Sign Flag
+	bool CY{}; // Carry Flag
+	bool AC{}; // Auxiliary Carry Flag
+	bool I{}; // Interrupt Flag
+	bool T{}; // Trap Flag
 
   private:
 	std::map<uint16_t, disassembler_globals::AnyTuple> tuple_instructions{};
