@@ -23,7 +23,7 @@ bool cpu_handler::handle_instructions() {
 			auto param = std::get<2>(instruction);
 			ptr(param);
 			if (memory::PC == previous_pc)
-				memory::PC += (std::get<3>(instruction) + 1);
+				memory::PC += ((std::get<3>(instruction) * 2) + 1);
 
 		} catch (...) {
 			exception::invalid_asm();

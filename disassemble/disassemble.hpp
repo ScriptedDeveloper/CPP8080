@@ -52,8 +52,8 @@ class disassembler {
 
   private:
 	std::vector<uint8_t> bytes_vec;
-	double i_instruction_find;	// for finding all digits in a >=2 byte instruction
-	double i_instruction_max{}; // every instruction has its own max length
+	double i_instruction_find{}; // for finding all digits in a >=2 byte instruction
+	double i_instruction_max{};	 // every instruction has its own max length
 	std::map<uint16_t, disassembler_globals::AnyTuple> tuple_instructions{};
 	std::vector<disassembler_globals::AnyTuple> tuple_instructions_temp{};
 	using AnyVar = std::variant<int, bool, char, uint8_t, void>;
@@ -62,7 +62,7 @@ class disassembler {
 	template <typename T> bool big_to_little_endian(int i_instruction_find, int i_instruction_max, T &param);
 	template <typename T>
 	bool add_instruction(uint8_t &current_opcode, std::vector<uint16_t> &last_param, uint16_t &param, T &address,
-						 double i_instruction_find, double i_instruction_max,
+						 double &i_instruction_find, double &i_instruction_max,
 						 disassembler_globals::AnyTuple tuple = disassembler_globals::EMPTY_TUPLE,
 						 bool skip_endian = false);
 	bool validate_opcode(uint8_t &current_opcode, double &i_instruction_max, double &i_instruction_find,
@@ -96,7 +96,7 @@ template <typename T> auto disassembler::char_to_hex(T ch) {
 
 template <typename T>
 bool disassembler::add_instruction(uint8_t &current_opcode, std::vector<uint16_t> &last_param, uint16_t &param,
-								   T &address, double i_instruction_find, double i_instruction_max,
+								   T &address, double &i_instruction_find, double &i_instruction_max,
 								   disassembler_globals::AnyTuple tuple, bool skip_endian) {
 	if (tuple != disassembler_globals::EMPTY_TUPLE) {
 		auto tuple = tuple_instructions_temp.back();

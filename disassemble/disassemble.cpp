@@ -156,7 +156,7 @@ uint8_t disassembler::finish_instruction(uint8_t &current_opcode, std::vector<ui
 										 uint16_t &address, disassembler_globals::AnyTuple &tuple) {
 	current_opcode = 0;
 	param = 0;
-	address += (std::get<3>(tuple) + 1);
+	address += ((std::get<3>(tuple) * 2) + 1);
 	last_param.clear();
 	return address;
 }
@@ -242,7 +242,7 @@ std::map<uint16_t, disassembler_globals::AnyTuple> disassembler::disassemble() {
 				bool skip_endian{};
 				auto tuple = tuple_instructions_temp.back();
 				if (i_instruction_max == 1 && digit == 0) {
-					param = param / 10; // useless extra 0
+					param = param / 0x10; // useless extra 0
 					skip_endian = true;
 				}
 				add_instruction(current_opcode, last_param, param, address, i_instruction_find, i_instruction_max,
