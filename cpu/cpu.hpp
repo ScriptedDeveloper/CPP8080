@@ -19,13 +19,14 @@ class cpu_handler {
 		auto mask = ~(1 << (sizeof(T) * 8 - 1)); // removing most significant bit, mask
 		val = mask & val;
 	}
-	static bool CF; // Carry Flag
-	static bool ZF; // Zero Flag
-	static bool S;	// Sign Flag
-	static bool CY; // Carry Flag
-	static bool AC; // Auxiliary Carry Flag
-	static bool I;	// Interrupt Flag
-	static bool T;	// Trap Flag
+	static bool CF;					// Carry Flag
+	static bool ZF;					// Zero Flag
+	static bool S;					// Sign Flag
+	static bool CY;					// Carry Flag
+	static bool AC;					// Auxiliary Carry Flag
+	static bool I;					// Interrupt Flag
+	static bool T;					// Trap Flag
+	static bool interrupts_enabled; // Interrupt flag
 
   private:
 	std::map<uint16_t, disassembler_globals::AnyTuple> tuple_instructions{};
@@ -83,6 +84,8 @@ void jnc(uint16_t addr); // jump if not carry flag set
 void jz(uint16_t addr);	 // jump if zero flag is set
 void call(uint16_t &addr);
 void jnz(uint16_t addr); // jump if zero flag is not set
+void ei();				 // enables interrupt flag
+void di();				 // disables interrupt flag
 void ret();
 
 template <typename T, typename T2> void mov(T &register_one, T2 &register_two) {

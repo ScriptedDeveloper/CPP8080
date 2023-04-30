@@ -140,6 +140,14 @@ void disassembler::init_array() {
 		{0x87, {"A", [](uint16_t val = 0) {
 			cpu_instructions::add(memory::A); // this is efficevly just doubling the register
 			},
+		0, 0.0}},	
+		{0xFB, {"X", [](uint16_t val = 0) {
+			cpu_instructions::ei(); // interrupt flag on
+			},
+		0, 0.0}},	
+		{0xF3, {"X", [](uint16_t val = 0) {
+			cpu_instructions::di(); // interrupt flag off
+			},
 		0, 0.0}},
 
 	});

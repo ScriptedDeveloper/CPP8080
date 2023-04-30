@@ -17,6 +17,7 @@ bool cpu_handler::CY{};
 bool cpu_handler::AC{};
 bool cpu_handler::I{};
 bool cpu_handler::T{};
+bool cpu_handler::interrupts_enabled{};
 
 std::stack<uint8_t> memory::stack{}; // Stack of CPU
 
@@ -93,3 +94,7 @@ void cpu_instructions::jnz(uint16_t addr) {
 		return;
 	jmp(addr);
 }
+
+void cpu_instructions::ei() { cpu_handler::interrupts_enabled = true; }
+
+void cpu_instructions::di() { cpu_handler::interrupts_enabled = false; }
