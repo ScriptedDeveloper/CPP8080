@@ -80,7 +80,7 @@ class disassembler {
 	template <typename T, typename T2> auto add_digits(T byte1, T2 byte2);
 	template <typename T> auto char_to_hex(T ch);
 	//	std::string get_file_contents();
-	static std::unique_ptr<std::unordered_map<uint8_t, disassembler_globals::AnyTuple>>
+	static std::unique_ptr<std::unordered_map<uint16_t, disassembler_globals::AnyTuple>>
 		opmap; // unordered_map find operation has O(1) while std::find in array has O(n)
 };
 

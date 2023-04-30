@@ -3,7 +3,7 @@
 #include <codecvt>
 #include <cstdint>
 
-std::unique_ptr<std::unordered_map<uint8_t, disassembler_globals::AnyTuple>> disassembler::opmap;
+std::unique_ptr<std::unordered_map<uint16_t, disassembler_globals::AnyTuple>> disassembler::opmap;
 
 /*
 std::string disassembler::get_file_contents() {
@@ -17,99 +17,99 @@ void disassembler::init_array() {
 	using namespace cpu_instructions;
 	// clang-format off
 	opmap = std::make_unique<std::unordered_map<
-		uint8_t, disassembler_globals::
+		uint16_t, disassembler_globals::
 		 AnyTuple>>(std::
-		unordered_map<uint8_t, disassembler_globals::AnyTuple>{
-		{0x00, {"NOP", [](uint8_t val = 0) { nop(); }, 1, 0.0}},
-		{0x40, {"B,B", [](uint8_t val = 0) { mov(memory::B, memory::B); }, 1, 0.0}},
-		{0x41, {"B,C", [](uint8_t val = 0) { mov(memory::B, memory::C); }, 1, 0.0}},
-		{0x42, {"B,D", [](uint8_t val = 0) { mov(memory::B, memory::D); }, 1, 0.0}},
-		{0x43, {"B,E", [](uint8_t val = 0) { mov(memory::B, memory::E); }, 1, 0.0}},
-		{0x44, {"B,H", [](uint8_t val = 0) { mov(memory::B, memory::H); }, 1, 0.0}},
-		{0x45, {"B,L", [](uint8_t val = 0) { mov(memory::B, memory::L); }, 1, 0.0}},
-		{0x47, {"B,A", [](uint8_t val = 0) { mov(memory::B, memory::A); }, 1, 0.0}},
-		{0x48, {"C,B", [](uint8_t val = 0) { mov(memory::C, memory::B); }, 1, 0.0}},
-		{0x49, {"C,C", [](uint8_t val = 0) { mov(memory::C, memory::C); }, 1, 0.0}},
-		{0x4A, {"C,D", [](uint8_t val = 0) { mov(memory::C, memory::D); }, 1, 0.0}},
-		{0x4B, {"C,E", [](uint8_t val = 0) { mov(memory::C, memory::E); }, 1, 0.0}},
-		{0x4C, {"C,H", [](uint8_t val = 0) { mov(memory::C, memory::H); }, 1, 0.0}},
-		{0x4D, {"C,L", [](uint8_t val = 0) { mov(memory::C, memory::L); }, 1, 0.0}},
-		{0x4F, {"C,A", [](uint8_t val = 0) { mov(memory::C, memory::A); }, 1, 0.0}},
-		{0x50, {"D,B", [](uint8_t val = 0) { mov(memory::D, memory::B); }, 1, 0.0}},
-		{0x51, {"D,C", [](uint8_t val = 0) { mov(memory::D, memory::C); }, 1, 0.0}},
-		{0x52, {"D,D", [](uint8_t val = 0) { mov(memory::D, memory::D); }, 1, 0.0}},
-		{0x53, {"D,E", [](uint8_t val = 0) { mov(memory::D, memory::E); }, 1, 0.0}},
-		{0x54, {"D,H", [](uint8_t val = 0) { mov(memory::D, memory::H); }, 1, 0.0}},
-		{0x55, {"D,L", [](uint8_t val = 0) { mov(memory::D, memory::L); }, 1, 0.0}},
-		{0x57, {"D,A", [](uint8_t val = 0) { mov(memory::D, memory::A); }, 1, 0.0}},
-		{0x58, {"E,B", [](uint8_t val = 0) { mov(memory::E, memory::B); }, 1, 0.0}},
-		{0x59, {"E,C", [](uint8_t val = 0) { mov(memory::E, memory::C); }, 1, 0.0}},
-		{0x5A, {"E,D", [](uint8_t val = 0) { mov(memory::E, memory::D); }, 1, 0.0}},
-		{0x5B, {"E,E", [](uint8_t val = 0) { mov(memory::E, memory::E); }, 1, 0.0}},
-		{0x5C, {"E,H", [](uint8_t val = 0) { mov(memory::E, memory::H); }, 1, 0.0}},
-		{0x5D, {"E,L", [](uint8_t val = 0) { mov(memory::E, memory::L); }, 1, 0.0}},
-		{0x5F, {"E,A", [](uint8_t val = 0) { mov(memory::E, memory::A); }, 1, 0.0}},
-		{0x60, {"H,B", [](uint8_t val = 0) { mov(memory::H, memory::B); }, 1, 0.0}},
-		{0x61, {"H,C", [](uint8_t val = 0) { mov(memory::H, memory::C); }, 1, 0.0}},
-		{0x62, {"H,D", [](uint8_t val = 0) { mov(memory::H, memory::D); }, 1, 0.0}},
-		{0x63, {"H,E", [](uint8_t val = 0) { mov(memory::H, memory::E); }, 1, 0.0}},
-		{0x64, {"H,H", [](uint8_t val = 0) { mov(memory::H, memory::H); }, 1, 0.0}},
-		{0x65, {"H,L", [](uint8_t val = 0) { mov(memory::H, memory::L); }, 1, 0.0}},
-		{0x67, {"H,A", [](uint8_t val = 0) { mov(memory::H, memory::A); }, 1, 0.0}},
-		{0x68, {"L,B", [](uint8_t val = 0) { mov(memory::L, memory::B); }, 1, 0.0}},
-		{0x69, {"L,C", [](uint8_t val = 0) { mov(memory::L, memory::C); }, 1, 0.0}},
-		{0x6A, {"L,D", [](uint8_t val = 0) { mov(memory::L, memory::D); }, 1, 0.0}},
-		{0x6B, {"L,E", [](uint8_t val = 0) { mov(memory::L, memory::E); }, 1, 0.0}},
-		{0x6C, {"L,H", [](uint8_t val = 0) { mov(memory::L, memory::H); }, 1, 0.0}},
-		{0x6D, {"L,L", [](uint8_t val = 0) { mov(memory::L, memory::L); }, 1, 0.0}},
-		{0x6F, {"L,A", [](uint8_t val = 0) { mov(memory::L, memory::A); }, 1, 0.0}},
-		{0x78, {"A,B", [](uint8_t val = 0) { mov(memory::A, memory::B); }, 1, 0.0}},
-		{0x79, {"A,C", [](uint8_t val = 0) { mov(memory::A, memory::C); }, 1, 0.0}},
-		{0x7A, {"A,D", [](uint8_t val = 0) { mov(memory::A, memory::D); }, 1, 0.0}},
-		{0x7B, {"A,E", [](uint8_t val = 0) { mov(memory::A, memory::E); }, 1, 0.0}},
-		{0x7C, {"A,H", [&](uint8_t val = 0) { mov(memory::A, memory::H); }, 1, 0.0}},
-		{0x7D, {"A,L", [](uint8_t val = 0) { mov(memory::A, memory::L); }, 1, 0.0}},
-		{0x7F, {"A,A", [](uint8_t val = 0) { mov(memory::A, memory::A); }, 1, 0.0}},
-		{0x3E, {"A", [](uint8_t val) { mvi(val, memory::A); }, 0, 0.5}},
-		{0x06, {"B", [](uint8_t val) { mvi(val, memory::B); }, 0, 0.5}},
-		{0x0E, {"C", [](uint8_t val) { mvi(val, memory::C); }, 0, 0.5}},
-		{0x16, {"D", [](uint8_t val) { mvi(val, memory::D); }, 0, 0.5}},
-		{0x1E, {"E", [](uint8_t val) { mvi(val, memory::E); }, 0, 0.5}},
-		{0x26, {"H", [](uint8_t val) { mvi(val, memory::H); }, 0, 0.5}},
-		{0x2E, {"L", [](uint8_t val) { mvi(val, memory::L); }, 0, 0.5}},
-		{0xC5, {"B,B", [](uint8_t val = 0) { // double B, marked as no need for params (pushed onto stack)
+		unordered_map<uint16_t, disassembler_globals::AnyTuple>{
+		{0x00, {"NOP", [](uint16_t val = 0) { nop(); }, 1, 0.0}},
+		{0x40, {"B,B", [](uint16_t val = 0) { mov(memory::B, memory::B); }, 1, 0.0}},
+		{0x41, {"B,C", [](uint16_t val = 0) { mov(memory::B, memory::C); }, 1, 0.0}},
+		{0x42, {"B,D", [](uint16_t val = 0) { mov(memory::B, memory::D); }, 1, 0.0}},
+		{0x43, {"B,E", [](uint16_t val = 0) { mov(memory::B, memory::E); }, 1, 0.0}},
+		{0x44, {"B,H", [](uint16_t val = 0) { mov(memory::B, memory::H); }, 1, 0.0}},
+		{0x45, {"B,L", [](uint16_t val = 0) { mov(memory::B, memory::L); }, 1, 0.0}},
+		{0x47, {"B,A", [](uint16_t val = 0) { mov(memory::B, memory::A); }, 1, 0.0}},
+		{0x48, {"C,B", [](uint16_t val = 0) { mov(memory::C, memory::B); }, 1, 0.0}},
+		{0x49, {"C,C", [](uint16_t val = 0) { mov(memory::C, memory::C); }, 1, 0.0}},
+		{0x4A, {"C,D", [](uint16_t val = 0) { mov(memory::C, memory::D); }, 1, 0.0}},
+		{0x4B, {"C,E", [](uint16_t val = 0) { mov(memory::C, memory::E); }, 1, 0.0}},
+		{0x4C, {"C,H", [](uint16_t val = 0) { mov(memory::C, memory::H); }, 1, 0.0}},
+		{0x4D, {"C,L", [](uint16_t val = 0) { mov(memory::C, memory::L); }, 1, 0.0}},
+		{0x4F, {"C,A", [](uint16_t val = 0) { mov(memory::C, memory::A); }, 1, 0.0}},
+		{0x50, {"D,B", [](uint16_t val = 0) { mov(memory::D, memory::B); }, 1, 0.0}},
+		{0x51, {"D,C", [](uint16_t val = 0) { mov(memory::D, memory::C); }, 1, 0.0}},
+		{0x52, {"D,D", [](uint16_t val = 0) { mov(memory::D, memory::D); }, 1, 0.0}},
+		{0x53, {"D,E", [](uint16_t val = 0) { mov(memory::D, memory::E); }, 1, 0.0}},
+		{0x54, {"D,H", [](uint16_t val = 0) { mov(memory::D, memory::H); }, 1, 0.0}},
+		{0x55, {"D,L", [](uint16_t val = 0) { mov(memory::D, memory::L); }, 1, 0.0}},
+		{0x57, {"D,A", [](uint16_t val = 0) { mov(memory::D, memory::A); }, 1, 0.0}},
+		{0x58, {"E,B", [](uint16_t val = 0) { mov(memory::E, memory::B); }, 1, 0.0}},
+		{0x59, {"E,C", [](uint16_t val = 0) { mov(memory::E, memory::C); }, 1, 0.0}},
+		{0x5A, {"E,D", [](uint16_t val = 0) { mov(memory::E, memory::D); }, 1, 0.0}},
+		{0x5B, {"E,E", [](uint16_t val = 0) { mov(memory::E, memory::E); }, 1, 0.0}},
+		{0x5C, {"E,H", [](uint16_t val = 0) { mov(memory::E, memory::H); }, 1, 0.0}},
+		{0x5D, {"E,L", [](uint16_t val = 0) { mov(memory::E, memory::L); }, 1, 0.0}},
+		{0x5F, {"E,A", [](uint16_t val = 0) { mov(memory::E, memory::A); }, 1, 0.0}},
+		{0x60, {"H,B", [](uint16_t val = 0) { mov(memory::H, memory::B); }, 1, 0.0}},
+		{0x61, {"H,C", [](uint16_t val = 0) { mov(memory::H, memory::C); }, 1, 0.0}},
+		{0x62, {"H,D", [](uint16_t val = 0) { mov(memory::H, memory::D); }, 1, 0.0}},
+		{0x63, {"H,E", [](uint16_t val = 0) { mov(memory::H, memory::E); }, 1, 0.0}},
+		{0x64, {"H,H", [](uint16_t val = 0) { mov(memory::H, memory::H); }, 1, 0.0}},
+		{0x65, {"H,L", [](uint16_t val = 0) { mov(memory::H, memory::L); }, 1, 0.0}},
+		{0x67, {"H,A", [](uint16_t val = 0) { mov(memory::H, memory::A); }, 1, 0.0}},
+		{0x68, {"L,B", [](uint16_t val = 0) { mov(memory::L, memory::B); }, 1, 0.0}},
+		{0x69, {"L,C", [](uint16_t val = 0) { mov(memory::L, memory::C); }, 1, 0.0}},
+		{0x6A, {"L,D", [](uint16_t val = 0) { mov(memory::L, memory::D); }, 1, 0.0}},
+		{0x6B, {"L,E", [](uint16_t val = 0) { mov(memory::L, memory::E); }, 1, 0.0}},
+		{0x6C, {"L,H", [](uint16_t val = 0) { mov(memory::L, memory::H); }, 1, 0.0}},
+		{0x6D, {"L,L", [](uint16_t val = 0) { mov(memory::L, memory::L); }, 1, 0.0}},
+		{0x6F, {"L,A", [](uint16_t val = 0) { mov(memory::L, memory::A); }, 1, 0.0}},
+		{0x78, {"A,B", [](uint16_t val = 0) { mov(memory::A, memory::B); }, 1, 0.0}},
+		{0x79, {"A,C", [](uint16_t val = 0) { mov(memory::A, memory::C); }, 1, 0.0}},
+		{0x7A, {"A,D", [](uint16_t val = 0) { mov(memory::A, memory::D); }, 1, 0.0}},
+		{0x7B, {"A,E", [](uint16_t val = 0) { mov(memory::A, memory::E); }, 1, 0.0}},
+		{0x7C, {"A,H", [&](uint16_t val = 0) { mov(memory::A, memory::H); }, 1, 0.0}},
+		{0x7D, {"A,L", [](uint16_t val = 0) { mov(memory::A, memory::L); }, 1, 0.0}},
+		{0x7F, {"A,A", [](uint16_t val = 0) { mov(memory::A, memory::A); }, 1, 0.0}},
+		{0x3E, {"A", [](uint16_t val) { mvi(val, memory::A); }, 0, 0.5}},
+		{0x06, {"B", [](uint16_t val) { mvi(val, memory::B); }, 0, 0.5}},
+		{0x0E, {"C", [](uint16_t val) { mvi(val, memory::C); }, 0, 0.5}},
+		{0x16, {"D", [](uint16_t val) { mvi(val, memory::D); }, 0, 0.5}},
+		{0x1E, {"E", [](uint16_t val) { mvi(val, memory::E); }, 0, 0.5}},
+		{0x26, {"H", [](uint16_t val) { mvi(val, memory::H); }, 0, 0.5}},
+		{0x2E, {"L", [](uint16_t val) { mvi(val, memory::L); }, 0, 0.5}},
+		{0xC5, {"B,B", [](uint16_t val = 0) { // double B, marked as no need for params (pushed onto stack)
 			cpu_instructions::push(memory::B);
 			},
 		1, 0.0}},
-		{0xD5, {"D,D", [](uint8_t val = 0) {
+		{0xD5, {"D,D", [](uint16_t val = 0) {
 			cpu_instructions::push(memory::D);
 			},
 		1, 0.0}},	
-		{0xE5, {"H,H", [](uint8_t val = 0) {
+		{0xE5, {"H,H", [](uint16_t val = 0) {
 			cpu_instructions::push(memory::H);
 			},
 		1, 0.0}},
-		{0xC1, {"B,B", [](uint8_t val = 0) {
+		{0xC1, {"B,B", [](uint16_t val = 0) {
 			cpu_instructions::pop(memory::B);
 			},
 		1, 0.0}},	
-		{0xD1, {"D,D", [](uint8_t val = 0) {
+		{0xD1, {"D,D", [](uint16_t val = 0) {
 			cpu_instructions::pop(memory::D);
 			},
 		1, 0.0}},	
-		{0xD2, {"H,H", [](uint8_t val = 0) {
+		{0xD2, {"H,H", [](uint16_t val = 0) {
 			cpu_instructions::pop(memory::H);
 			},
 		1, 0.0}},
-		{0xC3, {"X,X", [](uint8_t val) {
+		{0xC3, {"X,X", [](uint16_t val) {
 			cpu_instructions::jmp(val);
 			},
 		0, 1.0}},
-		{0xCD, {"X,X", [](uint8_t val) {
+		{0xCD, {"X,X", [](uint16_t val) {
 			cpu_instructions::call(val);
 			},
 		0, 1.0}},	
-		{0xC9, {"X", [](uint8_t val = 0) {
+		{0xC9, {"X", [](uint16_t val = 0) {
 			cpu_instructions::ret();
 			},
 		0, 0.0}},

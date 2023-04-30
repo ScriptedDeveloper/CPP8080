@@ -10,6 +10,14 @@ uint8_t memory::L{};
 uint16_t memory::PC{};
 uint16_t memory::SP{0xFFFF}; // stack grows from down to upper
 
+bool cpu_handler::CF{};
+bool cpu_handler::ZF{};
+bool cpu_handler::S{};
+bool cpu_handler::CY{};
+bool cpu_handler::AC{};
+bool cpu_handler::I{};
+bool cpu_handler::T{};
+
 std::stack<uint8_t> memory::stack{}; // Stack of CPU
 
 bool cpu_handler::handle_instructions() {
@@ -34,7 +42,7 @@ bool cpu_handler::handle_instructions() {
 
 bool cpu_instructions::nop() { return true; }
 
-void cpu_instructions::mvi(uint8_t val, uint8_t &reg) { reg = val; }
+// void cpu_instructions::mvi(uint8_t val, uint8_t &reg) { reg = val; }
 
 void cpu_instructions::push(uint8_t &reg) {
 	memory::stack.push(reg);
@@ -48,9 +56,9 @@ void cpu_instructions::pop(uint8_t &reg) {
 	memory::SP++;
 }
 
-void cpu_instructions::jmp(uint8_t &addr) { memory::PC = addr; }
+void cpu_instructions::jmp(uint16_t &addr) { memory::PC = addr; }
 
-void cpu_instructions::call(uint8_t &addr) {
+void cpu_instructions::call(uint16_t &addr) {
 	memory::stack.push(memory::PC + 3); // we dont wanna have a call loop
 	memory::PC = addr;
 }
@@ -60,4 +68,28 @@ void cpu_instructions::ret() {
 		return; // Issue here : function gets invoked twice, so it will result in a segfault
 	memory::PC = memory::stack.top();
 	memory::stack.pop();
+}
+
+void cpu_instructions::jc(uint16_t addr) {
+	if (!cpu_handler::CF)
+		return; // carry flag not set
+	jmp(addr);
+}
+
+void cpu_instructions::jnc(uint16_t addr) {
+	if (cpu_handler::CF)
+		return;
+	jmp(addr);
+}
+
+void cpu_instructions::jz(uint16_t addr) {
+	if (!cpu_handler::CF)
+		return;
+	jmp(addr);
+}
+
+void cpu_instructions::jnz(uint16_t addr) {
+	if (cpu_handler::CF)
+		return;
+	jmp(addr);
 }
