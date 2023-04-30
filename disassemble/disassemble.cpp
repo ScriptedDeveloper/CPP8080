@@ -113,6 +113,34 @@ void disassembler::init_array() {
 			cpu_instructions::ret();
 			},
 		0, 0.0}},
+		{0x80, {"B", [](uint16_t val = 0) {
+			cpu_instructions::add(memory::B);
+			},
+		0, 0.0}},	
+		{0x81, {"C", [](uint16_t val = 0) {
+			cpu_instructions::add(memory::C);
+			},
+		0, 0.0}},	
+		{0x82, {"D", [](uint16_t val = 0) {
+			cpu_instructions::add(memory::D);
+			},
+		0, 0.0}},	
+		{0x83, {"E", [](uint16_t val = 0) {
+			cpu_instructions::add(memory::E);
+			},
+		0, 0.0}},	
+		{0x84, {"H", [](uint16_t val = 0) {
+			cpu_instructions::add(memory::H);
+			},
+		0, 0.0}},	
+		{0x85, {"L", [](uint16_t val = 0) {
+			cpu_instructions::add(memory::L);
+			},
+		0, 0.0}},	
+		{0x87, {"A", [](uint16_t val = 0) {
+			cpu_instructions::add(memory::A); // this is efficevly just doubling the register
+			},
+		0, 0.0}},
 
 	});
 	// clang-format on
