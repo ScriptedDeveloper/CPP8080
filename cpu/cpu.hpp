@@ -27,6 +27,7 @@ class cpu_handler {
 	static bool I;					// Interrupt Flag
 	static bool T;					// Trap Flag
 	static bool interrupts_enabled; // Interrupt flag
+	static bool is_hlt;				// is the CPU on halt?
 
   private:
 	std::map<uint16_t, disassembler_globals::AnyTuple> tuple_instructions{};
@@ -86,6 +87,7 @@ void call(uint16_t &addr);
 void jnz(uint16_t addr); // jump if zero flag is not set
 void ei();				 // enables interrupt flag
 void di();				 // disables interrupt flag
+void hlt();
 void ret();
 
 template <typename T, typename T2> void mov(T &register_one, T2 &register_two) {

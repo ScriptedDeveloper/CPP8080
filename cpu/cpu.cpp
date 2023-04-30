@@ -18,6 +18,7 @@ bool cpu_handler::AC{};
 bool cpu_handler::I{};
 bool cpu_handler::T{};
 bool cpu_handler::interrupts_enabled{};
+bool cpu_handler::is_hlt{};
 
 std::stack<uint8_t> memory::stack{}; // Stack of CPU
 
@@ -26,6 +27,8 @@ bool cpu_handler::handle_instructions() {
 		exception::invalid_format(); // why would you run an empty executeable?
 	for (; memory::PC <= tuple_instructions.rbegin()->first;) {
 		try {
+			if (cpu_handler::is_hlt)
+				continue; // cpu is halted
 			uint16_t previous_pc = memory::PC;
 			auto instruction = tuple_instructions[memory::PC];
 			auto ptr = std::get<1>(instruction);
@@ -98,3 +101,5 @@ void cpu_instructions::jnz(uint16_t addr) {
 void cpu_instructions::ei() { cpu_handler::interrupts_enabled = true; }
 
 void cpu_instructions::di() { cpu_handler::interrupts_enabled = false; }
+
+void cpu_instructions::hlt() { cpu_handler::is_hlt = true; }

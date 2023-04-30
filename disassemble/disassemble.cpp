@@ -148,6 +148,10 @@ void disassembler::init_array() {
 		{0xF3, {"X", [](uint16_t val = 0) {
 			cpu_instructions::di(); // interrupt flag off
 			},
+		0, 0.0}},	
+		{0x76, {"X", [](uint16_t val = 0) {
+			cpu_instructions::hlt(); // halts CPU
+			},
 		0, 0.0}},
 
 	});
