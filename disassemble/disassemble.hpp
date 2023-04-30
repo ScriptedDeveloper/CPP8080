@@ -59,7 +59,9 @@ class disassembler {
 	using AnyVar = std::variant<int, bool, char, uint8_t, void>;
 	std::ifstream ifsfile;
 	disassembler_globals::AnyTuple find_instruction(const uint8_t &opcode);
-	template <typename T> bool big_to_little_endian(int i_instruction_find, int i_instruction_max, T &param);
+	template <typename T>
+		requires std::is_arithmetic_v<T> bool
+	big_to_little_endian(int i_instruction_find, int i_instruction_max, T &param);
 	template <typename T>
 	bool add_instruction(uint8_t &current_opcode, std::vector<uint16_t> &last_param, uint16_t &param, T &address,
 						 double &i_instruction_find, double &i_instruction_max,
@@ -112,7 +114,9 @@ bool disassembler::add_instruction(uint8_t &current_opcode, std::vector<uint16_t
 	return true;
 }
 
-template <typename T> bool disassembler::big_to_little_endian(int i_instruction_find, int i_instruction_max, T &param) {
+template <typename T>
+	requires std::is_arithmetic_v<T> bool
+disassembler::big_to_little_endian(int i_instruction_find, int i_instruction_max, T &param) {
 	if (i_instruction_find >= 1 && i_instruction_max >= 1) {
 		param = ntohs(param); // Will not always work though
 		(i_instruction_find == 1) ? i_instruction_find += 1 : int();
