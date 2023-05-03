@@ -8,7 +8,7 @@ uint8_t memory::E{};
 uint8_t memory::H{};
 uint8_t memory::L{};
 uint16_t memory::PC{};
-uint16_t memory::SP{0xFFFF}; // stack grows from down to upper
+uint16_t memory::SP{}; // stack grows from down to upper (in most cases)
 
 bool cpu_handler::CF{};
 bool cpu_handler::ZF{};
@@ -50,14 +50,14 @@ bool cpu_instructions::nop() { return true; }
 
 void cpu_instructions::push(uint8_t &reg) {
 	memory::stack.push(reg);
-	memory::SP--;
+	memory::SP++;
 	reg = 0;
 }
 
 void cpu_instructions::pop(uint8_t &reg) {
 	reg = memory::stack.top();
 	memory::stack.pop();
-	memory::SP++;
+	memory::SP--;
 }
 
 void cpu_instructions::jmp(uint16_t &addr) { memory::PC = addr; }
