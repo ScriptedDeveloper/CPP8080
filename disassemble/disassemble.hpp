@@ -26,6 +26,7 @@ constexpr auto EMPTY_TUPLE = std::make_tuple("", nullptr, UINT16_MAX + 1, 0.0);
 }; // namespace disassembler_globals
 
 #include "../cpu/cpu.hpp"
+#include "../cpu/isr.hpp"
 
 class disassembler {
   public:

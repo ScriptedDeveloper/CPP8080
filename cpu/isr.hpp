@@ -1,22 +1,18 @@
 #pragma once
+#include "../error/error.hpp"
 #include "cpu.hpp"
-#include <cstdint>
-#include <vector>
-#include <functional>
 #include <array>
+#include <cstdint>
+#include <functional>
+#include <vector>
 
 class isr {
   public:
-	isr(uint16_t addr) {
-		cpu_handler::interrupts_enabled = false; // intel 8080 doesnt support stacked interrupts
-		memory::stack.push(addr);
-	};
+	isr(){};
 	virtual ~isr(){
 
 	};
-	//static constexpr std::vector<void(*)(uint8_t)> ivt{
-	//}; // interrupt vector table
-  private:
 	bool RST(uint8_t num);
 
+  private:
 }; // Interrupt Service Routine

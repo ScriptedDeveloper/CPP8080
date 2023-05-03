@@ -299,7 +299,47 @@ void disassembler::init_array() {
 		{0x76, {"X", [](uint16_t val = 0) {
 			cpu_instructions::hlt(); // halts CPU
 			},
-		0, 0.0}}
+		0, 0.0}},	
+		{0xC7, {"0", [&](uint16_t val = 0) {
+			isr isr_obj;
+			isr_obj.RST(0);
+			},
+		0, 0.0}},	
+		{0xCF, {"1", [](uint16_t val = 0) {
+			isr i;
+			i.RST(1);
+			},
+		0, 0.0}},	
+		{0xD7, {"2", [](uint16_t val = 0) {
+			isr i;
+			i.RST(2);
+			},
+		0, 0.0}},	
+		{0xDF, {"3", [](uint16_t val = 0) {
+			isr i;
+			i.RST(3);
+			},
+		0, 0.0}},	
+		{0xE7, {"4", [](uint16_t val = 0) {
+			isr i;
+			i.RST(4);
+			},
+		0, 0.0}},	
+		{0xEF, {"5", [](uint16_t val = 0) {
+			isr i;
+			i.RST(5);
+			},
+		0, 0.0}},	
+		{0xF7, {"6", [](uint16_t val = 0) {
+			isr i;
+			i.RST(6);
+			},
+		0, 0.0}},	
+		{0xF7, {"7", [](uint16_t val = 0) {
+			isr i;
+			i.RST(7);
+			},
+		0, 0.0}},
 
 	});
 	// clang-format on

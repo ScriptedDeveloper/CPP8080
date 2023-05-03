@@ -2,6 +2,7 @@
 #include "../disassemble/disassemble.hpp"
 #include "../error/error.hpp"
 #include <iostream>
+#include <map>
 #include <stack>
 
 class cpu_handler {
