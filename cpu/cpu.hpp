@@ -77,8 +77,9 @@ void add(T1 &reg) {
 		cpu_handler::set_carry_flag(reg);
 	memory::A += reg;
 }
-
-void push(uint8_t &reg); // self explanatory
+void out(uint8_t &device_list); // currently 0 : console output
+void in(uint8_t &device_list);	// currently 0 : console input
+void push(uint8_t &reg);		// self explanatory
 void pop(uint8_t &reg);
 void jmp(uint16_t &addr);
 void jc(uint16_t addr);	 // jump if carry flag set

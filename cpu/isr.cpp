@@ -2,7 +2,7 @@
 
 bool isr::RST(uint8_t num) {
 	if (num > 7)
-		exception::invalid_asm();
+		exception::invalid_asm("RST, invalid interrupt number");
 	if (!cpu_handler::interrupts_enabled)
 		return false;
 	cpu_handler::interrupts_enabled = false;			 // intel 8080 doesnt support stacked interrupts

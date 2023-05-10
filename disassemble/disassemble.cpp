@@ -26,7 +26,7 @@ int get_digits(std::string &opcode) {
 	try {
 		return std::stoi(opcode);
 	} catch (std::invalid_argument &) {
-		exception::invalid_asm();
+		exception::invalid_asm(opcode);
 	}
 	return -1; // making the compiler stop whining
 }
@@ -100,7 +100,7 @@ bool disassembler::add_digit(char ch_int, std::stringstream &ss) {
 	if (ch_int == '\n' || ch_int == '\0' || ch_int == ' ' || ch_int == '\t')
 		return false; // skipping
 	if (std::isalpha(ch_int) && !std::isxdigit(ch_int))
-		exception::invalid_asm(); // aint no letters in machine code
+		exception::invalid_asm(ch_int); // aint no letters in machine code
 	ss << std::hex << ch_int;
 	return true;
 }
@@ -339,7 +339,17 @@ void disassembler::init_array() {
 			isr i;
 			i.RST(7);
 			},
-		0, 0.0}},
+		0, 0.0}},	
+		{0xD3, {"X", [](uint16_t val) {
+			uint8_t temp = val; // cant cast uint16_t because function requires reference
+			cpu_instructions::out(temp);
+			},
+		0, 0.5}},	
+		{0xDB, {"X", [](uint16_t val) {
+			uint8_t temp = val;
+			cpu_instructions::in(temp);
+			},
+		0, 0.5}},
 
 	});
 	// clang-format on

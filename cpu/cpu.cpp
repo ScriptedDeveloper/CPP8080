@@ -38,7 +38,8 @@ bool cpu_handler::handle_instructions() {
 				memory::PC += ((std::get<3>(instruction) * 2) + 1);
 
 		} catch (...) {
-			exception::invalid_asm();
+			int temp{};
+			exception::invalid_asm(temp);
 		}
 	}
 	return true;
@@ -96,6 +97,33 @@ void cpu_instructions::jnz(uint16_t addr) {
 	if (cpu_handler::CF)
 		return;
 	jmp(addr);
+}
+
+void cpu_instructions::out(uint8_t &device_list) {
+	switch (device_list) { // an unordered_map rn is a little too overkill
+	case 1: {
+		std::cout << std::hex << static_cast<int>(memory::A) << std::endl;
+		break;
+	}
+	default: {
+		std::string_view opcode("0xD3");
+		exception::invalid_asm(opcode);
+	}
+	};
+}
+
+void cpu_instructions::in(uint8_t &device_list) {
+	switch (device_list) { // same reason as above
+	case 1: {
+		std::cin >> memory::A;
+		memory::A -= '0';
+		break;
+	}
+	default: {
+		std::string_view opcode("0xDB");
+		exception::invalid_asm(opcode);
+	}
+	}
 }
 
 void cpu_instructions::ei() { cpu_handler::interrupts_enabled = true; }

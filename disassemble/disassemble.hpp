@@ -19,8 +19,8 @@
 
 namespace disassembler_globals {
 using AnyTuple = std::tuple<std::string_view, std::function<void(uint8_t val)>,
-							int,  // Param
-							float // Amount of bytes to be read (1 hex digit = 0.5 bytes)
+							uint16_t, // Param
+							float	  // Amount of bytes to be read (1 hex digit = 0.5 bytes)
 							>;
 constexpr auto EMPTY_TUPLE = std::make_tuple("", nullptr, UINT16_MAX + 1, 0.0);
 }; // namespace disassembler_globals
