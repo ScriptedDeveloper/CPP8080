@@ -91,6 +91,13 @@ void ei();				 // enables interrupt flag
 void di();				 // disables interrupt flag
 void hlt();
 void ret();
+template <typename T>
+	requires is_digits<T>
+void inr(T &reg) {
+	if (std::numeric_limits<T>::digits + 1 < reg + 1) // value is greater than register size, so set carry flag
+		cpu_handler::set_carry_flag(reg);
+	reg++;
+}
 
 template <typename T, typename T2> void mov(T &register_one, T2 &register_two) {
 	if (std::is_same<T, uint8_t>() && std::is_same<T2, uint16_t>())
