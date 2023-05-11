@@ -1,4 +1,5 @@
 #include "cpu/cpu.hpp"
+#include "cpu/isr.hpp"
 #include "disassemble/disassemble.hpp"
 #include "error/error.hpp"
 #include <iostream>
@@ -11,8 +12,9 @@ int main(int argc, char **argv) {
 	disassembler d(argv[1]);
 	auto disassembled_vec = d.disassemble();
 	cpu_handler c(disassembled_vec);
-	if (!c.handle_instructions())
-		exception::invalid_asm();
-	;
+	if (!c.handle_instructions()) {
+		int temp{};
+		exception::invalid_asm(temp);
+	}
 	return 0;
 }

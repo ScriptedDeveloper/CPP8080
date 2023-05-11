@@ -153,6 +153,8 @@ std::map<uint16_t, disassembler_globals::AnyTuple> disassembler::disassemble() {
 			continue;
 		if (digit == 0)
 			zero_count++;
+		else
+			exception::invalid_asm(current_opcode);
 	}
 	if (!last_param.empty()) {
 		tuple_instructions[address] = tuple_instructions_temp.back();
