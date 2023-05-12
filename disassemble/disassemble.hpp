@@ -38,6 +38,8 @@ class disassembler {
 		 * Gets machine code, puts into string
 		 */
 		std::ifstream ifsfile(filename.data(), std::iostream::binary);
+		if (ifsfile.fail())
+			throw std::invalid_argument("Could not access file ");
 		// std::basic_stringstream<uint8_t> ss_temp;
 		// ss_temp << ifsfile.rdbuf();
 		auto size = ifsfile.gcount();
