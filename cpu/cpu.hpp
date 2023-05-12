@@ -67,13 +67,21 @@ void mvi(T1 val, T2 &reg) {
 		cpu_handler::set_carry_flag(val);
 	}
 	reg = val;
+	cpu_handler::CF = (reg == 0) ? 1 : 0; // the mvi operation is 0, so set zero flag
 }
 
 template <typename T1>
 	requires is_digits<T1>
 void add(T1 &reg) {
-	if (reg > sizeof(memory::A))
+	if (reg + memory::A > std::numeric_limits<decltype(memory::A)>::max())
 		cpu_handler::set_carry_flag(reg);
+	cpu_handler::CF = (reg == 0) ? 1 : 0; // the add operation is 0, so set zero flag
+	memory::A += reg;
+}
+template <typename T1> void sub(T1 &reg) {
+	if (memory::A - reg < std::numeric_limits<decltype(memory::A)>::min())
+		cpu_handler::set_carry_flag(reg);
+	cpu_handler::CF = (reg == 0) ? 1 : 0; // the add operation is 0, so set zero flag
 	memory::A += reg;
 }
 void out(uint8_t &device_list); // currently 0 : console output
@@ -90,6 +98,7 @@ void ei();				 // enables interrupt flag
 void di();				 // disables interrupt flag
 void hlt();
 void ret();
+void cmc(); // complement carry
 template <typename T>
 	requires is_digits<T>
 void inr(T &reg) {
@@ -103,6 +112,7 @@ template <typename T, typename T2> void mov(T &register_one, T2 &register_two) {
 		return; // throwing invalid assembly instruction l8ter
 	// register_one = register_two;
 	register_one = register_two;
+	cpu_handler::CF = (register_one == 0) ? 1 : 0;
 	register_two = 0; // emptying register
 }
 

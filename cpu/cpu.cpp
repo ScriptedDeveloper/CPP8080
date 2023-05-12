@@ -75,6 +75,13 @@ void cpu_instructions::ret() {
 	memory::stack.pop();
 }
 
+void cpu_instructions::cmc() {
+	/*
+	 * Sets carry flag to opposite value.
+	 */
+	cpu_handler::CF = !cpu_handler::CF;
+}
+
 void cpu_instructions::jc(uint16_t addr) {
 	if (!cpu_handler::CF)
 		return; // carry flag not set

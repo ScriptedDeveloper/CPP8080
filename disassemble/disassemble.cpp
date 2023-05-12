@@ -375,7 +375,39 @@ void disassembler::init_array() {
 		{0x2C, {"L", [](uint16_t val = 0) {
 			cpu_instructions::inr(memory::L);
 			},
-		0, 0.0}}	
+		0, 0.0}},	
+		{0x3F, {"X", [](uint16_t val = 0) {
+			cpu_instructions::cmc();
+			},
+		0, 0.0}}, 
+		{0x90, {"B", [](uint16_t val = 0) {
+			cpu_instructions::sub(memory::B);
+		},
+		0, 0.0}},
+		{0x91, {"C", [](uint16_t val = 0) {
+			cpu_instructions::sub(memory::C);
+			},
+		0, 0.0}},
+         	{0x92, {"D", [](uint16_t val = 0) {
+             		cpu_instructions::sub(memory::D);
+			},
+		0, 0.0}},   
+		{0x93, {"E", [](uint16_t val = 0) {
+			cpu_instructions::sub(memory::E);
+			},
+		0, 0.0}},
+         	{0x94, {"H", [](uint16_t val = 0) {
+             		cpu_instructions::sub(memory::H);
+			},
+         	0, 0.0}},   
+         	{0x95, {"L", [](uint16_t val = 0) {
+             		cpu_instructions::sub(memory::L);
+			},
+         	0, 0.0}},
+         	{0x97, {"A", [](uint16_t val = 0) {
+             		cpu_instructions::sub(memory::A); // this is efficevly just doubling the register
+			},
+		0, 0.0}}
 	});
 	// clang-format on
 }
