@@ -405,7 +405,35 @@ void disassembler::init_array() {
 			},
          	0, 0.0}},
          	{0x97, {"A", [](uint16_t val = 0) {
-             		cpu_instructions::sub(memory::A); // this is efficevly just doubling the register
+             		cpu_instructions::sub(memory::A); // this is efficevly just subtracting the register
+			},
+		0, 0.0}},
+		{0x8B, {"B", [](uint16_t val = 0) {
+			cpu_instructions::cmp(memory::B);
+		},
+		0, 0.0}},
+		{0x9B, {"C", [](uint16_t val = 0) {
+			cpu_instructions::cmp(memory::C);
+			},
+		0, 0.0}},
+         	{0xBA, {"D", [](uint16_t val = 0) {
+             		cpu_instructions::cmp(memory::D);
+			},
+		0, 0.0}},   
+		{0xBB, {"E", [](uint16_t val = 0) {
+			cpu_instructions::cmp(memory::E);
+			},
+		0, 0.0}},
+         	{0xBC, {"H", [](uint16_t val = 0) {
+             		cpu_instructions::cmp(memory::H);
+			},
+         	0, 0.0}},   
+         	{0xBD, {"L", [](uint16_t val = 0) {
+             		cpu_instructions::cmp(memory::L);
+			},
+         	0, 0.0}},
+         	{0xBF, {"A", [](uint16_t val = 0) {
+             		cpu_instructions::cmp(memory::A); // this is efficevly just A==A
 			},
 		0, 0.0}}
 	});

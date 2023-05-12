@@ -78,12 +78,21 @@ void add(T1 &reg) {
 	cpu_handler::CF = (reg == 0) ? 1 : 0; // the add operation is 0, so set zero flag
 	memory::A += reg;
 }
-template <typename T1> void sub(T1 &reg) {
+template <typename T1>
+	requires is_digits<T1>
+void sub(T1 &reg) {
 	if (memory::A - reg < std::numeric_limits<decltype(memory::A)>::min())
 		cpu_handler::set_carry_flag(reg);
 	cpu_handler::CF = (reg == 0) ? 1 : 0; // the add operation is 0, so set zero flag
 	memory::A += reg;
 }
+
+template <typename T1>
+	requires is_digits<T1>
+void cmp(T1 reg) { // same as sub instruction, but doesnt change accumulator
+	sub(reg);
+}
+
 void out(uint8_t &device_list); // currently 0 : console output
 void in(uint8_t &device_list);	// currently 0 : console input
 void push(uint8_t &reg);		// self explanatory
