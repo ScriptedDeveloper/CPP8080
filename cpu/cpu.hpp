@@ -17,8 +17,7 @@ class cpu_handler {
 	bool handle_instructions();
 	template <typename T> static void set_carry_flag(T &val) {
 		CF = true;
-		auto mask = ~(1 << (sizeof(T) * 8 - 1)); // removing most significant bit, mask
-		val = mask & val;
+		val = std::numeric_limits<T>::max(); // setting register value to max
 	}
 	static bool CF;					// Carry Flag
 	static bool ZF;					// Zero Flag
