@@ -351,8 +351,31 @@ void disassembler::init_array() {
 			uint8_t temp = val;
 			cpu_instructions::in(temp);
 			},
-		0, 0.5}},
-
+		0, 0.5}},	
+		{0x3C, {"A", [](uint16_t val = 0) {
+			cpu_instructions::inr(memory::A);
+			},
+		0, 0.0}},	
+		{0x04, {"B", [](uint16_t val = 0) {
+			cpu_instructions::inr(memory::B);
+			},
+		0, 0.0}},	
+		{0x0C, {"C", [](uint16_t val = 0) {
+			cpu_instructions::inr(memory::C);
+			},
+		0, 0.0}},	
+		{0x14, {"D", [](uint16_t val = 0) {
+			cpu_instructions::inr(memory::D);
+			},
+		0, 0.0}},	
+		{0x0C, {"E", [](uint16_t val = 0) {
+			cpu_instructions::inr(memory::E);
+			},
+		0, 0.0}},	
+		{0x2C, {"L", [](uint16_t val = 0) {
+			cpu_instructions::inr(memory::L);
+			},
+		0, 0.0}}	
 	});
 	// clang-format on
 }
