@@ -1,6 +1,11 @@
 #pragma once
 #include <algorithm>
+#ifdef unix
 #include <arpa/inet.h>
+#else
+#define NOMINMAX
+#include <WinSock2.h>
+#endif
 #include <array>
 #include <cstdint>
 #include <filesystem>

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <stack>
+#include <limits>
 
 class cpu_handler {
   public:
