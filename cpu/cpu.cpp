@@ -22,6 +22,26 @@ bool cpu_handler::is_hlt{};
 
 std::stack<uint8_t> memory::stack{}; // Stack of CPU
 
+void cpu_handler::print_registers() { 
+	using namespace memory;
+	/*
+	We have to use static_cast here, otherwise the console output will be interpreted 
+	as a char(ascii) value due to the uint8_t type.
+	*/
+	std::cout << "Execution complete ! " << std::endl
+			  << "Register values (hex)" << std::endl
+			  << "A : " << std::hex << static_cast<int>(A) << std::endl
+			  << "B : " << std::hex << static_cast<int>(B) << std::endl
+			  << "C : " << std::hex << static_cast<int>(C) << std::endl
+			  << "D : " << std::hex << static_cast<int>(D) << std::endl
+			  << "E : " << std::hex << static_cast<int>(E) << std::endl
+			  << "H : " << std::hex << static_cast<int>(H) << std::endl
+			  << "L : " << std::hex << static_cast<int>(L) << std::endl
+			  << "PC : " << std::hex << static_cast<int>(PC) << std::endl
+			  << "SP : " << std::hex << static_cast<int>(SP) << std::endl; 
+
+}
+
 bool cpu_handler::handle_instructions() {
 	if (tuple_instructions.empty())
 		exception::invalid_format(); // why would you run an empty executeable?
@@ -42,6 +62,8 @@ bool cpu_handler::handle_instructions() {
 			exception::invalid_asm(temp);
 		}
 	}
+	print_registers(); // at the end of execution, we should print the register values to the console
+
 	return true;
 }
 

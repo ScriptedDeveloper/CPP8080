@@ -32,6 +32,7 @@ class cpu_handler {
 
   private:
 	std::map<uint16_t, disassembler_globals::AnyTuple> tuple_instructions{};
+	void print_registers();
 };
 
 namespace memory {
