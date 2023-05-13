@@ -2,9 +2,9 @@
 #include "../disassemble/disassemble.hpp"
 #include "../error/error.hpp"
 #include <iostream>
+#include <limits>
 #include <map>
 #include <stack>
-#include <limits>
 
 class cpu_handler {
   public:

@@ -2,7 +2,7 @@
 #include <algorithm>
 #ifdef unix
 #include <arpa/inet.h>
-#else
+#elif defined(__WIN32)
 #define NOMINMAX
 #include <WinSock2.h>
 #endif
