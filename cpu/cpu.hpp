@@ -64,7 +64,7 @@ bool nop();
 template <typename T1, typename T2>
 	requires is_digits<T1, T2>
 void mvi(T1 val, T2 &reg) {
-	if (val > sizeof(T2)) { // register cant hold this value... setting carry flag
+	if (val > std::numeric_limits<T2>::max()) { // register cant hold this value... setting carry flag
 		cpu_handler::set_carry_flag(val);
 	}
 	reg = val;
