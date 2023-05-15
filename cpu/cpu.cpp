@@ -7,6 +7,7 @@ uint8_t memory::D{};
 uint8_t memory::E{};
 uint8_t memory::H{};
 uint8_t memory::L{};
+uint16_t memory::M;
 uint16_t memory::PC{};
 uint16_t memory::SP{}; // stack grows from down to upper (in most cases)
 
@@ -158,28 +159,6 @@ void cpu_instructions::in(uint8_t &device_list) {
 		exception::invalid_asm(opcode);
 	}
 	}
-}
-
-void cpu_instructions::xra(uint8_t &reg) {
-	/*
-	 * Performs logical XOR with register A + reg
-	 * Saves result in accumulator (register A)
-	 */
-	memory::A = memory::A ^ reg;
-}
-
-void cpu_instructions::ana(uint8_t &reg) {
-	/*
-	 * Same as above, only ANA
-	 */
-	memory::A = memory::A & reg;
-}
-
-void cpu_instructions::ora(uint8_t &reg) {
-	/*
-	 * Same as above, only OR
-	 */
-	memory::A = memory::A | reg;
 }
 
 void cpu_instructions::ei() { cpu_handler::interrupts_enabled = true; }

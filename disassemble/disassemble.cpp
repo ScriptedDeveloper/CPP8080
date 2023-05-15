@@ -156,6 +156,7 @@ void disassembler::init_array() {
 		{0x43, {"B,E", [](uint16_t val = 0) { mov(memory::B, memory::E); }, 1, 0.0}},
 		{0x44, {"B,H", [](uint16_t val = 0) { mov(memory::B, memory::H); }, 1, 0.0}},
 		{0x45, {"B,L", [](uint16_t val = 0) { mov(memory::B, memory::L); }, 1, 0.0}},
+		{0x46, {"B,M", [](uint16_t val = 0) { mov(memory::B, memory::M); }, 1, 0.0}},
 		{0x47, {"B,A", [](uint16_t val = 0) { mov(memory::B, memory::A); }, 1, 0.0}},
 		{0x48, {"C,B", [](uint16_t val = 0) { mov(memory::C, memory::B); }, 1, 0.0}},
 		{0x49, {"C,C", [](uint16_t val = 0) { mov(memory::C, memory::C); }, 1, 0.0}},
@@ -163,6 +164,7 @@ void disassembler::init_array() {
 		{0x4B, {"C,E", [](uint16_t val = 0) { mov(memory::C, memory::E); }, 1, 0.0}},
 		{0x4C, {"C,H", [](uint16_t val = 0) { mov(memory::C, memory::H); }, 1, 0.0}},
 		{0x4D, {"C,L", [](uint16_t val = 0) { mov(memory::C, memory::L); }, 1, 0.0}},
+		{0x4E, {"C,M", [](uint16_t val = 0) { mov(memory::C, memory::M); }, 1, 0.0}},
 		{0x4F, {"C,A", [](uint16_t val = 0) { mov(memory::C, memory::A); }, 1, 0.0}},
 		{0x50, {"D,B", [](uint16_t val = 0) { mov(memory::D, memory::B); }, 1, 0.0}},
 		{0x51, {"D,C", [](uint16_t val = 0) { mov(memory::D, memory::C); }, 1, 0.0}},
@@ -170,6 +172,7 @@ void disassembler::init_array() {
 		{0x53, {"D,E", [](uint16_t val = 0) { mov(memory::D, memory::E); }, 1, 0.0}},
 		{0x54, {"D,H", [](uint16_t val = 0) { mov(memory::D, memory::H); }, 1, 0.0}},
 		{0x55, {"D,L", [](uint16_t val = 0) { mov(memory::D, memory::L); }, 1, 0.0}},
+		{0x56, {"D,M", [](uint16_t val = 0) { mov(memory::D, memory::M); }, 1, 0.0}},
 		{0x57, {"D,A", [](uint16_t val = 0) { mov(memory::D, memory::A); }, 1, 0.0}},
 		{0x58, {"E,B", [](uint16_t val = 0) { mov(memory::E, memory::B); }, 1, 0.0}},
 		{0x59, {"E,C", [](uint16_t val = 0) { mov(memory::E, memory::C); }, 1, 0.0}},
@@ -177,6 +180,7 @@ void disassembler::init_array() {
 		{0x5B, {"E,E", [](uint16_t val = 0) { mov(memory::E, memory::E); }, 1, 0.0}},
 		{0x5C, {"E,H", [](uint16_t val = 0) { mov(memory::E, memory::H); }, 1, 0.0}},
 		{0x5D, {"E,L", [](uint16_t val = 0) { mov(memory::E, memory::L); }, 1, 0.0}},
+		{0x5E, {"E,M", [](uint16_t val = 0) { mov(memory::E, memory::M); }, 1, 0.0}},
 		{0x5F, {"E,A", [](uint16_t val = 0) { mov(memory::E, memory::A); }, 1, 0.0}},
 		{0x60, {"H,B", [](uint16_t val = 0) { mov(memory::H, memory::B); }, 1, 0.0}},
 		{0x61, {"H,C", [](uint16_t val = 0) { mov(memory::H, memory::C); }, 1, 0.0}},
@@ -184,6 +188,7 @@ void disassembler::init_array() {
 		{0x63, {"H,E", [](uint16_t val = 0) { mov(memory::H, memory::E); }, 1, 0.0}},
 		{0x64, {"H,H", [](uint16_t val = 0) { mov(memory::H, memory::H); }, 1, 0.0}},
 		{0x65, {"H,L", [](uint16_t val = 0) { mov(memory::H, memory::L); }, 1, 0.0}},
+		{0x66, {"H,M", [](uint16_t val = 0) { mov(memory::H, memory::M); }, 1, 0.0}},
 		{0x67, {"H,A", [](uint16_t val = 0) { mov(memory::H, memory::A); }, 1, 0.0}},
 		{0x68, {"L,B", [](uint16_t val = 0) { mov(memory::L, memory::B); }, 1, 0.0}},
 		{0x69, {"L,C", [](uint16_t val = 0) { mov(memory::L, memory::C); }, 1, 0.0}},
@@ -191,13 +196,22 @@ void disassembler::init_array() {
 		{0x6B, {"L,E", [](uint16_t val = 0) { mov(memory::L, memory::E); }, 1, 0.0}},
 		{0x6C, {"L,H", [](uint16_t val = 0) { mov(memory::L, memory::H); }, 1, 0.0}},
 		{0x6D, {"L,L", [](uint16_t val = 0) { mov(memory::L, memory::L); }, 1, 0.0}},
+		{0x6E, {"L,M", [](uint16_t val = 0) { mov(memory::L, memory::M); }, 1, 0.0}},
 		{0x6F, {"L,A", [](uint16_t val = 0) { mov(memory::L, memory::A); }, 1, 0.0}},
+		{0x70, {"M,B", [](uint16_t val = 0) { mov(memory::M, memory::B); }, 1, 0.0}},
+		{0x71, {"M,C", [](uint16_t val = 0) { mov(memory::M, memory::C); }, 1, 0.0}},
+		{0x72, {"M,D", [](uint16_t val = 0) { mov(memory::M, memory::D); }, 1, 0.0}},
+		{0x73, {"M,E", [](uint16_t val = 0) { mov(memory::M, memory::E); }, 1, 0.0}},
+		{0x74, {"M,H", [](uint16_t val = 0) { mov(memory::M, memory::H); }, 1, 0.0}},
+		{0x75, {"M,L", [](uint16_t val = 0) { mov(memory::M, memory::L); }, 1, 0.0}},
+		{0x77, {"M,A", [](uint16_t val = 0) { mov(memory::M, memory::A); }, 1, 0.0}},
 		{0x78, {"A,B", [](uint16_t val = 0) { mov(memory::A, memory::B); }, 1, 0.0}},
 		{0x79, {"A,C", [](uint16_t val = 0) { mov(memory::A, memory::C); }, 1, 0.0}},
 		{0x7A, {"A,D", [](uint16_t val = 0) { mov(memory::A, memory::D); }, 1, 0.0}},
 		{0x7B, {"A,E", [](uint16_t val = 0) { mov(memory::A, memory::E); }, 1, 0.0}},
 		{0x7C, {"A,H", [&](uint16_t val = 0) { mov(memory::A, memory::H); }, 1, 0.0}},
 		{0x7D, {"A,L", [](uint16_t val = 0) { mov(memory::A, memory::L); }, 1, 0.0}},
+		{0x7E, {"A,M", [](uint16_t val = 0) { mov(memory::A, memory::M); }, 1, 0.0}},
 		{0x7F, {"A,A", [](uint16_t val = 0) { mov(memory::A, memory::A); }, 1, 0.0}},
 		{0x3E, {"A", [](uint16_t val) { mvi(val, memory::A); }, 0, 0.5}},
 		{0x06, {"B", [](uint16_t val) { mvi(val, memory::B); }, 0, 0.5}},
@@ -206,6 +220,7 @@ void disassembler::init_array() {
 		{0x1E, {"E", [](uint16_t val) { mvi(val, memory::E); }, 0, 0.5}},
 		{0x26, {"H", [](uint16_t val) { mvi(val, memory::H); }, 0, 0.5}},
 		{0x2E, {"L", [](uint16_t val) { mvi(val, memory::L); }, 0, 0.5}},
+		{0x36, {"M", [](uint16_t val) { mvi(val, memory::M); }, 0, 0.5}},
 		{0xC5, {"B,B", [](uint16_t val = 0) { // double B, marked as no need for params (pushed onto stack)
 			cpu_instructions::push(memory::B);
 			},
@@ -439,6 +454,10 @@ void disassembler::init_array() {
          	{0xAD, {"L", [](uint16_t val = 0) {
              		cpu_instructions::xra(memory::L);
 			},
+         	0, 0.0}}, 
+		{0xEA, {"M", [](uint16_t val = 0) {
+             		cpu_instructions::xra(memory::M);
+			},
          	0, 0.0}},
          	{0xAF, {"A", [](uint16_t val = 0) {
              		cpu_instructions::xra(memory::A); 
@@ -466,6 +485,10 @@ void disassembler::init_array() {
          	0, 0.0}},   
          	{0xB5, {"L", [](uint16_t val = 0) {
              		cpu_instructions::ora(memory::L);
+			},
+         	0, 0.0}}, 
+		{0xB6, {"M", [](uint16_t val = 0) {
+             		cpu_instructions::ora(memory::M);
 			},
          	0, 0.0}},
          	{0xB7, {"A", [](uint16_t val = 0) {
@@ -495,12 +518,16 @@ void disassembler::init_array() {
          	{0xA5, {"L", [](uint16_t val = 0) {
              		cpu_instructions::ana(memory::L);
 			},
-         	0, 0.0}},
+         	0, 0.0}},	
+		{0xA6, {"M", [](uint16_t val = 0) {
+             		cpu_instructions::ana(memory::M); 
+			},
+		0, 0.0}},
+
          	{0xA7, {"A", [](uint16_t val = 0) {
              		cpu_instructions::ana(memory::A); 
 			},
-		0, 0.0}}
-
+		0, 0.0}}, 
 	});
 	// clang-format on
 }

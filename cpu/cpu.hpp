@@ -46,6 +46,7 @@ extern uint8_t D;
 extern uint8_t E;
 extern uint8_t H;
 extern uint8_t L;
+extern uint16_t M;
 extern uint16_t PC; // Program counter
 extern uint16_t SP; // Stack Pointer
 
@@ -110,9 +111,32 @@ void di();				 // disables interrupt flag
 void hlt();
 void ret();
 void cmc(); // complement carry
-void xra(uint8_t &reg);
-void ana(uint8_t &reg);
-void ora(uint8_t &reg);
+template <typename T>
+	requires is_digits<T>
+void xra(T &reg) {
+	/*
+	 * Performs logical XOR with register A + reg
+	 * Saves result in accumulator (register A)
+	 */
+	memory::A = memory::A ^ static_cast<decltype(memory::A)>(reg);
+}
+template <typename T>
+	requires is_digits<T>
+void ana(T &reg) {
+	/*
+	 * Same as above, only ANA
+	 */
+	memory::A = memory::A & static_cast<decltype(memory::A)>(reg);
+}
+template <typename T>
+	requires is_digits<T>
+void ora(T &reg) {
+	/*
+	 * Same as above, only OR
+	 */
+	memory::A = memory::A | static_cast<uint8_t>(reg);
+}
+
 template <typename T>
 	requires is_digits<T>
 void inr(T &reg) {
