@@ -7,14 +7,6 @@ class disassembler;
 
 std::unique_ptr<std::unordered_map<uint16_t, disassembler_globals::AnyTuple>> disassembler::opmap;
 
-/*
-std::string disassembler::get_file_contents() {
-	std::stringstream ss_file;
-	ss_file << ifsfile.rdbuf();
-	return ss_file.str();
-}
-*/
-
 disassembler_globals::AnyTuple disassembler::find_instruction(const uint8_t &opcode) {
 	auto val = opmap->find(opcode);
 	if (val == opmap->end())
@@ -104,19 +96,6 @@ bool disassembler::add_digit(char ch_int, std::stringstream &ss) {
 	ss << std::hex << ch_int;
 	return true;
 }
-
-/*
-bool disassembler::is_empty_instruction(uint8_t current_opcode, int i_string, short zero_count) {
-	int size = machine_code.size() - 1;
-	if(zero_count < 4)
-		return false;
-	if(size == i_string)
-		return false; // at end of program, preventing segfault
-	if(machine_code[i_string + 1] == 0) // its an empty instruction
-		return true;
-	return false;
-}
-*/
 
 std::map<uint16_t, disassembler_globals::AnyTuple> disassembler::disassemble() {
 	uint16_t address{};
