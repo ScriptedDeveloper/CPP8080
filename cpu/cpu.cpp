@@ -160,6 +160,28 @@ void cpu_instructions::in(uint8_t &device_list) {
 	}
 }
 
+void cpu_instructions::xra(uint8_t &reg) {
+	/*
+	 * Performs logical XOR with register A + reg
+	 * Saves result in accumulator (register A)
+	 */
+	memory::A = memory::A ^ reg;
+}
+
+void cpu_instructions::ana(uint8_t &reg) {
+	/*
+	 * Same as above, only ANA
+	 */
+	memory::A = memory::A & reg;
+}
+
+void cpu_instructions::ora(uint8_t &reg) {
+	/*
+	 * Same as above, only OR
+	 */
+	memory::A = memory::A | reg;
+}
+
 void cpu_instructions::ei() { cpu_handler::interrupts_enabled = true; }
 
 void cpu_instructions::di() { cpu_handler::interrupts_enabled = false; }

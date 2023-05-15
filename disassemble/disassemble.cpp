@@ -160,7 +160,7 @@ std::map<uint16_t, disassembler_globals::AnyTuple> disassembler::disassemble() {
 		tuple_instructions[address] = tuple_instructions_temp.back();
 	}
 
-		return tuple_instructions;
+	return tuple_instructions;
 }
 
 void disassembler::init_array() {
@@ -436,7 +436,92 @@ void disassembler::init_array() {
          	{0xBF, {"A", [](uint16_t val = 0) {
              		cpu_instructions::cmp(memory::A); // this is efficevly just A==A
 			},
+		0, 0.0}},
+		{0xA8, {"B", [](uint16_t val = 0) {
+			cpu_instructions::xra(memory::B);
+		},
+		0, 0.0}},
+		{0xA9, {"C", [](uint16_t val = 0) {
+			cpu_instructions::xra(memory::C);
+			},
+		0, 0.0}},
+         	{0xAA, {"D", [](uint16_t val = 0) {
+             		cpu_instructions::xra(memory::D);
+			},
+		0, 0.0}},   
+		{0xAB, {"E", [](uint16_t val = 0) {
+			cpu_instructions::xra(memory::E);
+			},
+		0, 0.0}},
+         	{0xAC, {"H", [](uint16_t val = 0) {
+             		cpu_instructions::xra(memory::H);
+			},
+         	0, 0.0}},   
+         	{0xAD, {"L", [](uint16_t val = 0) {
+             		cpu_instructions::xra(memory::L);
+			},
+         	0, 0.0}},
+         	{0xAF, {"A", [](uint16_t val = 0) {
+             		cpu_instructions::xra(memory::A); 
+			},
+		0, 0.0}},
+		{0xB0, {"B", [](uint16_t val = 0) {
+			cpu_instructions::ora(memory::B);
+		},
+		0, 0.0}},
+		{0xB1, {"C", [](uint16_t val = 0) {
+			cpu_instructions::ora(memory::C);
+			},
+		0, 0.0}},
+         	{0xB2, {"D", [](uint16_t val = 0) {
+             		cpu_instructions::ora(memory::D);
+			},
+		0, 0.0}},   
+		{0xB3, {"E", [](uint16_t val = 0) {
+			cpu_instructions::ora(memory::E);
+			},
+		0, 0.0}},
+         	{0xB4, {"H", [](uint16_t val = 0) {
+             		cpu_instructions::ora(memory::H);
+			},
+         	0, 0.0}},   
+         	{0xB5, {"L", [](uint16_t val = 0) {
+             		cpu_instructions::ora(memory::L);
+			},
+         	0, 0.0}},
+         	{0xB7, {"A", [](uint16_t val = 0) {
+             		cpu_instructions::ora(memory::A); 
+			},
+		0, 0.0}},
+		{0xA0, {"B", [](uint16_t val = 0) {
+			cpu_instructions::ana(memory::B);
+		},
+		0, 0.0}},
+		{0xA1, {"C", [](uint16_t val = 0) {
+			cpu_instructions::ana(memory::C);
+			},
+		0, 0.0}},
+         	{0xA2, {"D", [](uint16_t val = 0) {
+             		cpu_instructions::ana(memory::D);
+			},
+		0, 0.0}},   
+		{0xA3, {"E", [](uint16_t val = 0) {
+			cpu_instructions::ana(memory::E);
+			},
+		0, 0.0}},
+         	{0xA4, {"H", [](uint16_t val = 0) {
+             		cpu_instructions::ana(memory::H);
+			},
+         	0, 0.0}},   
+         	{0xA5, {"L", [](uint16_t val = 0) {
+             		cpu_instructions::ana(memory::L);
+			},
+         	0, 0.0}},
+         	{0xA7, {"A", [](uint16_t val = 0) {
+             		cpu_instructions::ana(memory::A); 
+			},
 		0, 0.0}}
+
 	});
 	// clang-format on
 }

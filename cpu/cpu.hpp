@@ -110,6 +110,9 @@ void di();				 // disables interrupt flag
 void hlt();
 void ret();
 void cmc(); // complement carry
+void xra(uint8_t &reg);
+void ana(uint8_t &reg);
+void ora(uint8_t &reg);
 template <typename T>
 	requires is_digits<T>
 void inr(T &reg) {
