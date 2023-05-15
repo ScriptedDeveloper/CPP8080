@@ -126,7 +126,7 @@ template <typename T>
 	requires std::is_arithmetic_v<T> bool
 disassembler::big_to_little_endian(int i_instruction_find, int i_instruction_max, T &param) {
 	if (i_instruction_find >= 1 && i_instruction_max >= 1) {
-		//param = ntohs(param); // Will not always work though
+		// param = ntohs(param); // Will not always work though
 		(i_instruction_find == 1) ? i_instruction_find += 1 : int();
 		return true;
 	}

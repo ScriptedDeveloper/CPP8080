@@ -22,10 +22,10 @@ bool cpu_handler::is_hlt{};
 
 std::stack<uint8_t> memory::stack{}; // Stack of CPU
 
-void cpu_handler::print_registers() { 
+void cpu_handler::print_registers() {
 	using namespace memory;
 	/*
-	We have to use static_cast here, otherwise the console output will be interpreted 
+	We have to use static_cast here, otherwise the console output will be interpreted
 	as a char(ascii) value due to the uint8_t type.
 	*/
 	std::cout << "Execution complete ! " << std::endl
@@ -38,8 +38,13 @@ void cpu_handler::print_registers() {
 			  << "H : " << std::hex << static_cast<int>(H) << std::endl
 			  << "L : " << std::hex << static_cast<int>(L) << std::endl
 			  << "PC : " << std::hex << static_cast<int>(PC) << std::endl
-			  << "SP : " << std::hex << static_cast<int>(SP) << std::endl; 
+			  << "SP : " << std::hex << static_cast<int>(SP) << std::endl;
 
+#ifdef __WIN32
+	do {
+		std::cout << "Press any key to continue." << std::endl;
+	} while (std::cin.get() != '\n');
+#endif
 }
 
 bool cpu_handler::handle_instructions() {

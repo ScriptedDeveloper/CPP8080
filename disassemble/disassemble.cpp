@@ -159,7 +159,8 @@ std::map<uint16_t, disassembler_globals::AnyTuple> disassembler::disassemble() {
 	if (!last_param.empty()) {
 		tuple_instructions[address] = tuple_instructions_temp.back();
 	}
-	return tuple_instructions;
+
+		return tuple_instructions;
 }
 
 void disassembler::init_array() {
