@@ -51,10 +51,16 @@ void cpu_handler::print_registers() {
 bool cpu_handler::handle_instructions() {
 	if (tuple_instructions.empty())
 		exception::invalid_format(); // why would you run an empty executeable?
+	bool printed{};
 	for (; memory::PC <= tuple_instructions.rbegin()->first;) {
 		try {
-			if (cpu_handler::is_hlt)
+			if (cpu_handler::is_hlt) {
+				if (!printed) {
+					std::cout << "CPU HALTED!" << std::endl;
+					printed = true;
+				}
 				continue; // cpu is halted
+			}
 			uint16_t previous_pc = memory::PC;
 			auto instruction = tuple_instructions[memory::PC];
 			auto ptr = std::get<1>(instruction);
@@ -123,7 +129,10 @@ void cpu_instructions::jnz(uint16_t addr) {
 void cpu_instructions::out(uint8_t &device_list) {
 	switch (device_list) { // an unordered_map rn is a little too overkill
 	case 1: {
-		std::cout << std::hex << static_cast<int>(memory::A) << std::endl;
+		if (std::isgraph(memory::A))
+			std::cout << memory::A << std::endl;
+		else
+			std::cout << std::hex << static_cast<int>(memory::A) << std::endl;
 		break;
 	}
 	default: {

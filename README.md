@@ -19,6 +19,14 @@ Contributing
 cmake . && make
 ```
 
+## Tests
+You may run a test with : 
+
+```
+./CrazeEmulate --test
+```
+This will print a simple Hello and halt the CPU.
+
 ## Contributions
 
 Contributions to the CrazeEmulate project are welcome and encouraged. If you would like to contribute, please fork the repository and submit a pull request with your changes. You can also contribute by reporting bugs, suggesting new features, or helping to improve the documentation.
