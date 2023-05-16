@@ -150,6 +150,9 @@ void disassembler::init_array() {
 		 AnyTuple>>(std::
 		unordered_map<uint16_t, disassembler_globals::AnyTuple>{
 		{0x00, {"NOP", [](uint16_t val = 0) { nop(); }, 1, 0.0}},
+		{0x10, {"NOP", [](uint16_t val = 0) { nop(); }, 1, 0.0}},
+		{0x20, {"NOP", [](uint16_t val = 0) { nop(); }, 1, 0.0}},
+		{0x30, {"NOP", [](uint16_t val = 0) { nop(); }, 1, 0.0}},
 		{0x40, {"B,B", [](uint16_t val = 0) { mov(memory::B, memory::B); }, 1, 0.0}},
 		{0x41, {"B,C", [](uint16_t val = 0) { mov(memory::B, memory::C); }, 1, 0.0}},
 		{0x42, {"B,D", [](uint16_t val = 0) { mov(memory::B, memory::D); }, 1, 0.0}},
@@ -249,6 +252,10 @@ void disassembler::init_array() {
 			cpu_instructions::jmp(val);
 			},
 		0, 1.0}},
+		{0xF2, {"X,X", [](uint16_t val) {
+			cpu_instructions::jmp(val);
+			},
+		0, 1.0}},
 		{0xCD, {"X,X", [](uint16_t val) {
 			cpu_instructions::call(val);
 			},
@@ -332,7 +339,7 @@ void disassembler::init_array() {
 			i.RST(6);
 			},
 		0, 0.0}},	
-		{0xF7, {"7", [](uint16_t val = 0) {
+		{0xFF, {"7", [](uint16_t val = 0) {
 			isr i;
 			i.RST(7);
 			},
@@ -527,7 +534,23 @@ void disassembler::init_array() {
          	{0xA7, {"A", [](uint16_t val = 0) {
              		cpu_instructions::ana(memory::A); 
 			},
-		0, 0.0}}, 
+		0, 0.0}},  
+		{0x01, {"B", [](uint16_t val) {
+             		cpu_instructions::mvi(val, memory::B); 
+			},
+		0, 0.0}}, 	
+		{0x11, {"D", [](uint16_t val) {
+             		cpu_instructions::mvi(val, memory::D); 
+			},
+		0, 0.0}}, 	
+		{0x21, {"H", [](uint16_t val) {
+             		cpu_instructions::mvi(val, memory::H); 
+			},
+		0, 0.0}}, 	
+		{0x31, {"SP", [](uint16_t val) {
+             		cpu_instructions::mvi(val, memory::SP); 
+			},
+		0, 0.0}}
 	});
 	// clang-format on
 }

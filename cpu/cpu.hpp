@@ -40,11 +40,11 @@ namespace memory {
  * Registers
  */
 extern uint8_t A;
-extern uint8_t B;
+extern uint16_t B;
 extern uint8_t C;
-extern uint8_t D;
+extern uint16_t D;
 extern uint8_t E;
-extern uint8_t H;
+extern uint16_t H;
 extern uint8_t L;
 extern uint16_t M;
 extern uint16_t PC; // Program counter
@@ -94,6 +94,28 @@ template <typename T1>
 	requires is_digits<T1>
 void cmp(T1 reg) { // same as sub instruction, but doesnt change accumulator
 	sub(reg);
+}
+
+template <typename T>
+	requires is_digits<T>
+void push(T &reg) {
+	memory::stack.push(static_cast<uint16_t>(reg));
+	memory::SP++;
+	reg = 0;
+}
+
+template <typename T>
+	requires is_digits<T>
+void pop(T &reg) {
+	uint16_t top = memory::stack.top();
+	if (std::numeric_limits<T>::max() < top)
+		/*
+		 * Stack can hold 16 bit values, and if for example you pop a 16 bit register onto it, we gonna have to set CF
+		 */
+		cpu_handler::set_carry_flag(top);
+	reg = top;
+	memory::stack.pop();
+	memory::SP--;
 }
 
 void out(uint8_t &device_list); // currently 0 : console output
