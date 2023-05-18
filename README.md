@@ -12,18 +12,13 @@ The Intel 8080 processor is a classic microprocessor that has played a significa
 
 ## Getting Started
 
-<<<<<<< HEAD
 To get started with the CrazeEmulate project, you will need a C++20 compiler, such as g++, clang, or msvc. Once you have a compiler set up, you can clone the CrazeEmulate repository and build the emulator using the provided CMake file. You can then run the emulator and start exploring the features.
-Contributing
-=======
-To get started with the CrazeEmulate project, you will need a C++17 compiler, such as GCC or Clang. Once you have a compiler set up, you can clone the CrazeEmulate repository and build the emulator using the provided CMake file. You can then run the emulator and start exploring the features.
->>>>>>> e6a422fd9b7031c54a6bbe36d9c1ccfffee32e39
-
 ```
 cmake . && make
 ```
 
 ## Tests
+
 You may run a test with : 
 
 ```
