@@ -1,9 +1,6 @@
 # CrazeEmulate
 
-This is an open-source Intel 8080 emulator project, written in modern C++17. The project is licensed under the GPL version 3 license, which means that any contributions are welcome.
-Overview
-
-The CrazeEmulate project is a hobby project aimed at emulating the Intel 8080 processor using modern C++17. The project is currently a work in progress, and many features are yet to be implemented. Time is short as solo student developer. However, the project already supports 153 out of 255 instructions.
+The CrazeEmulate project is a hobby project aimed at emulating the Intel 8080 processor using modern C++17. The project is currently a work in progress, and many features are yet to be implemented. Time is short as solo student developer. However, the project already supports **153 out of 255 instructions**.
 
 ## Motivation
 
